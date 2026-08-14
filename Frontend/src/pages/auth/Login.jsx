@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import smknLogo from "../../assets/images/Logo-SMKN-7-Semarang.png";
+import uksLogo from "../../assets/images/logo_uks-removebg-preview.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -60,9 +62,18 @@ export default function Login() {
         {/* Konten */}
         <div className="relative z-10 px-10 text-center">
 
-          {/* Placeholder logo */}
-          <div className="mx-auto mb-7 flex h-28 w-28 items-center justify-center rounded-3xl bg-emerald-600 text-3xl font-extrabold text-white shadow-xl shadow-emerald-900/10">
-            UKS
+          {/* Logo transparent */}
+          <div className="mx-auto mb-7 flex items-center justify-center gap-6">
+            <img
+              src={smknLogo}
+              alt="Logo SMKN 7 Semarang"
+              className="h-40 w-40 object-contain drop-shadow-sm"
+            />
+            <img
+              src={uksLogo}
+              alt="Logo UKS"
+              className="h-40 w-40 object-contain drop-shadow-sm"
+            />
           </div>
 
           <h1 className="text-4xl font-extrabold tracking-tight text-emerald-800">
@@ -77,23 +88,6 @@ export default function Login() {
             Sehat, Peduli, Berprestasi
           </p>
 
-          {/* Ilustrasi sementara */}
-          <div className="mx-auto mt-12 flex max-w-md items-center justify-center gap-4">
-
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-sm">
-              🩺
-            </div>
-
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-sm">
-              💊
-            </div>
-
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-sm">
-              ❤️
-            </div>
-
-          </div>
-
           <p className="mt-6 text-xs text-slate-400">
             Sistem Informasi UKS-STEMBASE
           </p>
@@ -107,24 +101,6 @@ export default function Login() {
 
         <div className="w-full max-w-md">
 
-          {/* Brand */}
-          <div className="mb-12 flex items-center gap-3">
-
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-xs font-extrabold text-white shadow-md">
-              UKS
-            </div>
-
-            <div>
-              <h2 className="text-lg font-bold text-emerald-800">
-                UKS STEMBASE
-              </h2>
-
-              <p className="text-xs text-slate-500">
-                Sehat, Peduli, Berprestasi
-              </p>
-            </div>
-
-          </div>
 
           {/* Heading */}
           <div className="mb-8">
