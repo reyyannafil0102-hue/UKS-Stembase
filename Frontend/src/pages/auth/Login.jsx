@@ -47,12 +47,12 @@ export default function Login() {
       {/* =========================
           BAGIAN KIRI
       ========================== */}
-      <section className="relative hidden min-h-screen overflow-hidden bg-gradient-to-br from-emerald-100 via-green-50 to-white lg:flex lg:w-[58%] lg:items-center lg:justify-center">
+      <section className="relative hidden min-h-screen overflow-hidden bg-linear-to-br from-emerald-100 via-green-50 to-white lg:flex lg:w-[58%] lg:items-center lg:justify-center">
 
         {/* Dekorasi */}
         <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-emerald-200/40" />
 
-        <div className="absolute -bottom-48 -right-32 h-[500px] w-[500px] rounded-full bg-green-200/40" />
+        <div className="absolute -bottom-48 -right-32 h-125 w-125 rounded-full bg-green-200/40" />
 
         <div className="absolute left-20 top-1/4 h-4 w-4 rounded-full bg-emerald-400/40" />
         <div className="absolute right-32 top-1/3 h-6 w-6 rounded-full bg-green-400/30" />
