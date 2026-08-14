@@ -231,7 +231,7 @@ export default function Login() {
               onClick={() => navigate("/register")}
               className="ml-1 font-semibold text-emerald-600 hover:text-emerald-700"
             >
-              Hubungi admin UKS
+              Buat akun baru
             </button>
           </div>
 
