@@ -29,7 +29,7 @@ export default function Login() {
       if (data.user.role_id === 1) {
         navigate("/admin");
       } else {
-        navigate("/beranda");
+        navigate("/Dashboard");
       }
     } catch (err) {
       console.error(err);
