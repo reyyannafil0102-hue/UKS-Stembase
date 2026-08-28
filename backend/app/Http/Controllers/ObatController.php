@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Obat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ObatController extends Controller
 {
@@ -29,19 +30,26 @@ class ObatController extends Controller
 
         $request->validate([
             'nama_obat' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
         ]);
 
-        $obat = Obat::create([
+        $data = [
             'nama_obat' => $request->nama_obat,
             'kegunaan' => $request->kegunaan,
             'stok' => $request->stok,
             'satuan' => $request->satuan,
             'keterangan' => $request->keterangan,
-        ]);
+        ];
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('foto-obat', 'public');
+        }
+
+        $obat = Obat::create($data);
 
         return response()->json([
             'message' => 'Obat berhasil ditambahkan',
@@ -60,6 +68,7 @@ class ObatController extends Controller
 
         $request->validate([
             'nama_obat' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
@@ -68,13 +77,22 @@ class ObatController extends Controller
 
         $obat = Obat::findOrFail($id);
 
-        $obat->update([
+        $data = [
             'nama_obat' => $request->nama_obat,
             'kegunaan' => $request->kegunaan,
             'stok' => $request->stok,
             'satuan' => $request->satuan,
             'keterangan' => $request->keterangan,
-        ]);
+        ];
+
+        if ($request->hasFile('foto')) {
+            if ($obat->foto) {
+                Storage::disk('public')->delete($obat->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('foto-obat', 'public');
+        }
+
+        $obat->update($data);
 
         return response()->json([
             'message' => 'Obat berhasil diperbarui',
@@ -92,6 +110,10 @@ class ObatController extends Controller
         }
 
         $obat = Obat::findOrFail($id);
+
+        if ($obat->foto) {
+            Storage::disk('public')->delete($obat->foto);
+        }
 
         $obat->delete();
 

@@ -17,7 +17,7 @@ const menuItems = [
 const colorClasses = ["bg-emerald-50", "bg-rose-50", "bg-sky-50", "bg-orange-50", "bg-amber-50", "bg-violet-50"];
 const storageUrl = "http://127.0.0.1:8000/storage";
 
-export default function StokObat() {
+export default function Inventaris() {
 	const navigate = useNavigate();
 	const [user] = useState(() => {
 		try {
@@ -26,16 +26,16 @@ export default function StokObat() {
 			return null;
 		}
 	});
-	const [obats, setObats] = useState([]);
+	const [items, setItems] = useState([]);
 	const [search, setSearch] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 
 	useEffect(() => {
-		const loadObats = async () => {
+		const loadInventaris = async () => {
 			try {
-				const response = await api.get("/obat");
-				setObats(response.data.obats || []);
+				const response = await api.get("/inventaris");
+				setItems(response.data.inventaris || []);
 			} catch (requestError) {
 				if (requestError.response?.status === 401) {
 					localStorage.removeItem("token");
@@ -43,13 +43,13 @@ export default function StokObat() {
 					navigate("/login");
 					return;
 				}
-				setError("Data stok obat belum dapat dimuat.");
+				setError("Data inventaris belum dapat dimuat.");
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		void loadObats();
+		void loadInventaris();
 	}, [navigate]);
 
 	const handleLogout = () => {
@@ -58,7 +58,7 @@ export default function StokObat() {
 		navigate("/login");
 	};
 
-	const filteredObats = obats.filter((obat) => obat.nama_obat.toLowerCase().includes(search.toLowerCase()));
+	const filteredItems = items.filter((item) => item.nama_barang.toLowerCase().includes(search.toLowerCase()));
 
 	return (
 		<div className="min-h-screen bg-slate-100">
@@ -69,25 +69,25 @@ export default function StokObat() {
 				</div>
 				<nav className="px-4 py-6">
 					{menuItems.map(({ label, path, icon: Icon }) => {
-						const active = path === "/stok-obat";
+						const active = path === "/inventaris";
 						return <button key={path} type="button" onClick={() => navigate(path)} className={`mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm transition ${active ? "bg-emerald-600 font-semibold text-white" : "text-slate-600 hover:bg-slate-50 hover:text-emerald-600"}`}><Icon size={18} />{label}</button>;
 					})}
 				</nav>
 				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Logout</button></div>
 			</aside>
-			<MobileMenu currentPath="/stok-obat" onLogout={handleLogout} />
+			<MobileMenu currentPath="/inventaris" onLogout={handleLogout} />
 
 			<main className="min-h-screen lg:ml-64">
 				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10">
-					<div><h2 className="text-2xl font-extrabold text-slate-800">Stok Obat</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Stok Obat</p></div>
+					<div><h2 className="text-2xl font-extrabold text-slate-800">Inventaris</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Inventaris</p></div>
 					<div className="flex items-center gap-5"><button type="button" aria-label="Notifikasi" className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"><Bell size={21} /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" /></button><div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <User size={21} className="text-emerald-600" />}</div><div className="hidden sm:block"><p className="text-sm font-bold text-slate-700">Hai, {user?.name || "Pengguna"}</p><p className="mt-0.5 text-xs text-slate-400">Siswa</p></div></div></div>
 				</header>
 
 				<div className="px-6 py-7 sm:px-8 lg:px-10 xl:px-12">
-					<div className="flex flex-col gap-3 sm:flex-row"><label className="flex h-11 flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10"><Search size={18} className="shrink-0 text-slate-400" /><span className="sr-only">Cari nama obat</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama obat..." className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400" /></label></div>
+					<div className="flex flex-col gap-3 sm:flex-row"><label className="flex h-11 flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10"><Search size={18} className="shrink-0 text-slate-400" /><span className="sr-only">Cari nama barang</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama barang..." className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400" /></label></div>
 					{error && <div className="mt-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>}
-					  {loading ? <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-sm text-slate-400 shadow-sm">Memuat stok obat...</div> : filteredObats.length === 0 ? <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-center text-sm text-slate-400 shadow-sm">Tidak ada obat yang sesuai.</div> : <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{filteredObats.map((obat, index) => <article key={obat.id} className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className={`flex h-48 items-center justify-center ${colorClasses[index % colorClasses.length]}`}>{obat.foto ? <img src={`${storageUrl}/${obat.foto}`} alt={obat.nama_obat} className="h-full w-full object-contain p-4" /> : <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-white shadow-sm"><Pill size={38} className="text-emerald-600" /></div>}</div><div className="p-5"><div className="flex items-start justify-between gap-3"><div><h3 className="text-base font-bold text-slate-800">{obat.nama_obat}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{obat.kegunaan}</p></div><div className="text-right"><p className="text-xs text-slate-400">Stok</p><p className={`text-lg font-bold ${obat.stok > 0 ? "text-emerald-600" : "text-red-500"}`}>{obat.stok}</p></div></div><span className="mt-4 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{obat.satuan}</span></div></article>)}</div>}
-					<div className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">Total jenis obat tersedia: <span className="font-bold text-emerald-600">{filteredObats.length} jenis</span></div>
+					{loading ? <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-sm text-slate-400 shadow-sm">Memuat inventaris...</div> : filteredItems.length === 0 ? <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-center text-sm text-slate-400 shadow-sm">Tidak ada inventaris yang sesuai.</div> : <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{filteredItems.map((item, index) => <article key={item.id} className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className={`flex h-48 items-center justify-center ${colorClasses[index % colorClasses.length]}`}>{item.foto ? <img src={`${storageUrl}/${item.foto}`} alt={item.nama_barang} className="h-full w-full object-contain p-4" /> : <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-white shadow-sm"><PackageSearch size={38} className="text-emerald-600" /></div>}</div><div className="p-5"><div className="flex items-start justify-between gap-3"><div><h3 className="text-base font-bold text-slate-800">{item.nama_barang}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{item.keterangan || "Tidak ada keterangan."}</p></div><div className="text-right"><p className="text-xs text-slate-400">Jumlah</p><p className={`text-lg font-bold ${item.jumlah > 0 ? "text-emerald-600" : "text-red-500"}`}>{item.jumlah}</p></div></div><span className="mt-4 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{item.satuan}</span></div></article>)}</div>}
+					<div className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">Total jenis inventaris tersedia: <span className="font-bold text-emerald-600">{filteredItems.length} jenis</span></div>
 				</div>
 			</main>
 		</div>

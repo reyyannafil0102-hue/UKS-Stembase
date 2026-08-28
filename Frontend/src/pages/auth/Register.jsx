@@ -15,8 +15,10 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [resendMessage, setResendMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,9 +42,9 @@ export default function Register() {
 
       // Kosongkan form
       setName("");
-      setEmail("");
       setKelas("");
       setPassword("");
+      setResendMessage("");
 
     } catch (err) {
       console.error(err);
@@ -61,6 +63,27 @@ export default function Register() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    setError("");
+    setResendMessage("");
+
+    try {
+      const response = await api.post("/email/verification-notification-public", {
+        email,
+      });
+
+      setResendMessage(response.data.message);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Gagal mengirim ulang email verifikasi. Silakan coba lagi."
+      );
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -148,6 +171,21 @@ export default function Register() {
           {success && (
             <div className="mb-5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
               {success}
+
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={resendLoading}
+                className="mt-3 block font-bold text-emerald-700 hover:text-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {resendLoading ? "Mengirim ulang..." : "Kirim ulang email verifikasi"}
+              </button>
+
+              {resendMessage && (
+                <p className="mt-2 text-xs text-emerald-600">
+                  {resendMessage}
+                </p>
+              )}
 
               <button
                 type="button"

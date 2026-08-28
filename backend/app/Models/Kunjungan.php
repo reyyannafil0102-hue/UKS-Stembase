@@ -10,6 +10,8 @@ class Kunjungan extends Model
 {
     protected $fillable = [
         'user_id',
+        'nama',
+        'kelas',
         'keluhan',
         'tindakan',
         'waktu_masuk',

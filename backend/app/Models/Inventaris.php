@@ -8,6 +8,7 @@ class Inventaris extends Model
 {
     protected $fillable = [
         'nama_barang',
+        'foto',
         'jumlah',
         'satuan',
         'keterangan',

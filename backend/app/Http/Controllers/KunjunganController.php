@@ -10,7 +10,8 @@ class KunjunganController extends Controller
     // Melihat kunjungan milik user yang login
     public function index(Request $request)
     {
-        $kunjungans = Kunjungan::where('user_id', $request->user()->id)
+        $kunjungans = Kunjungan::with('user:id,name,kelas')
+            ->where('user_id', $request->user()->id)
             ->latest('waktu_masuk')
             ->get();
 
@@ -71,11 +72,15 @@ class KunjunganController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas' => 'required|string|max:255',
             'keluhan' => 'required|string',
         ]);
 
         $kunjungan = Kunjungan::create([
             'user_id' => $request->user()->id,
+            'nama' => $request->nama,
+            'kelas' => $request->kelas,
             'keluhan' => $request->keluhan,
             'tindakan' => null,
             'waktu_masuk' => now(),

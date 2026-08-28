@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import api from "../../services/api";
 import smknLogo from "../../assets/images/Logo-SMKN-7-Semarang.png";
 import uksLogo from "../../assets/images/logo_uks-removebg-preview.png";
 
@@ -13,12 +14,17 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setLoading(true);
     setError("");
+    setVerificationRequired(false);
+    setResendMessage("");
 
     try {
       const data = await login(email, password);
@@ -34,12 +40,39 @@ export default function Login() {
     } catch (err) {
       console.error(err);
 
+      const isUnverified =
+        err.response?.status === 403 &&
+        err.response?.data?.message?.toLowerCase().includes("verifikasi");
+
+      setVerificationRequired(isUnverified);
+
       setError(
         err.response?.data?.message ||
           "Email atau password tidak sesuai."
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    setError("");
+    setResendMessage("");
+
+    try {
+      const response = await api.post("/email/verification-notification-public", {
+        email,
+      });
+
+      setResendMessage(response.data.message);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Gagal mengirim ulang email verifikasi. Silakan coba lagi."
+      );
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -117,6 +150,26 @@ export default function Login() {
           {error && (
             <div className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
+
+              {verificationRequired && (
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={resendLoading}
+                  className="mt-3 block font-bold text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {resendLoading
+                    ? "Mengirim ulang..."
+                    : "Kirim ulang email verifikasi"}
+                </button>
+              )}
+
+            </div>
+          )}
+
+          {resendMessage && (
+            <div className="mb-5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {resendMessage}
             </div>
           )}
 

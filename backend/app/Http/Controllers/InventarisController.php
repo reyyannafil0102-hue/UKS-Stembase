@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventaris;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class InventarisController extends Controller
 {
@@ -29,6 +30,7 @@ class InventarisController extends Controller
 
         $request->validate([
             'nama_barang' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
@@ -36,6 +38,7 @@ class InventarisController extends Controller
 
         $inventaris = Inventaris::create([
             'nama_barang' => $request->nama_barang,
+			'foto' => $request->hasFile('foto') ? $request->file('foto')->store('foto-inventaris', 'public') : null,
             'jumlah' => $request->jumlah,
             'satuan' => $request->satuan,
             'keterangan' => $request->keterangan,
@@ -58,6 +61,7 @@ class InventarisController extends Controller
 
         $request->validate([
             'nama_barang' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
@@ -65,12 +69,22 @@ class InventarisController extends Controller
 
         $inventaris = Inventaris::findOrFail($id);
 
-        $inventaris->update([
+        $data = [
             'nama_barang' => $request->nama_barang,
             'jumlah' => $request->jumlah,
             'satuan' => $request->satuan,
             'keterangan' => $request->keterangan,
-        ]);
+        ];
+
+        if ($request->hasFile('foto')) {
+            if ($inventaris->foto) {
+                Storage::disk('public')->delete($inventaris->foto);
+            }
+
+            $data['foto'] = $request->file('foto')->store('foto-inventaris', 'public');
+        }
+
+        $inventaris->update($data);
 
         return response()->json([
             'message' => 'Inventaris berhasil diperbarui',
@@ -88,6 +102,10 @@ class InventarisController extends Controller
         }
 
         $inventaris = Inventaris::findOrFail($id);
+
+        if ($inventaris->foto) {
+            Storage::disk('public')->delete($inventaris->foto);
+        }
 
         $inventaris->delete();
 

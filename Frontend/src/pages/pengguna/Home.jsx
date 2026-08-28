@@ -10,9 +10,11 @@ import {
   Lightbulb,
   CalendarDays,
   Home as HomeIcon,
+  PackageSearch,
 } from "lucide-react";
 
 import schoolImage from "../../assets/images/Logo-SMKN-7-Semarang.png";
+import MobileMenu from "../../components/MobileMenu";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -95,7 +97,7 @@ export default function Home() {
           {/* Absensi */}
           <button
             type="button"
-            onClick={() => navigate("/absensi")}
+            onClick={() => navigate("/absensi-uks")}
             className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 hover:text-emerald-600"
           >
             <ClipboardCheck size={18} />
@@ -110,6 +112,16 @@ export default function Home() {
           >
             <Pill size={18} />
             Stok Obat
+          </button>
+
+          {/* Inventaris */}
+          <button
+            type="button"
+            onClick={() => navigate("/inventaris")}
+            className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 hover:text-emerald-600"
+          >
+            <PackageSearch size={18} />
+            Inventaris
           </button>
 
           {/* Tips Kesehatan */}
@@ -161,6 +173,7 @@ export default function Home() {
         </div>
 
       </aside>
+      <MobileMenu currentPath="/Dashboard" onLogout={handleLogout} />
 
 
       {/* =====================================================
@@ -307,7 +320,7 @@ export default function Home() {
 
               <button
                 type="button"
-                onClick={() => navigate("/absensi")}
+                onClick={() => navigate("/absensi-uks")}
                 className="mt-6 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
               >
                 Isi Absensi

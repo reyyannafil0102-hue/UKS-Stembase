@@ -15,10 +15,13 @@ return new class extends Migration
     $table->id();
 
     // Role
-         $table->foreignId('role_id')
-          ->constrained('roles')
-          ->cascadeOnUpdate()
-          ->cascadeOnDelete();
+         $table->unsignedBigInteger('role_id');
+
+         $table->foreign('role_id')
+            ->references('id')
+            ->on('roles')
+            ->cascadeOnUpdate()
+            ->cascadeOnDelete();
 
     // Data User
          $table->string('name');

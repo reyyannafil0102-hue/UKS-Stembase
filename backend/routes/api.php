@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/email/verification-notification-public', [AuthController::class, 'resendVerificationPublic']);
 
 
 // DATA PENGGUNA
