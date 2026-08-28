@@ -8,6 +8,12 @@ import StokObat from "../pages/pengguna/StokObat";
 import Inventaris from "../pages/pengguna/Inventaris";
 import TipsKesehatan from "../pages/pengguna/TipsKesehatan";
 import EventUKS from "../pages/pengguna/EventUKS";
+import Profile from "../pages/pengguna/Profile";
+import AdminProfile from "../pages/admin/Users";
+import AdminDashboard from "../pages/admin/Dashboard";
+import AdminKunjungan from "../pages/admin/Kunjungan";
+import AdminObat from "../pages/admin/Obat";
+import AdminTips from "../pages/admin/TipsKesehatan";
 
 function AppRoutes() {
   return (
@@ -66,6 +72,42 @@ function AppRoutes() {
         <Route
           path="/event-uks"
           element={<EventUKS />}
+        />
+
+        {/* Profil pengguna */}
+        <Route
+          path="/profil"
+          element={<Profile />}
+        />
+
+        {/* Profil administrator */}
+        <Route
+          path="/admin/profil"
+          element={<AdminProfile />}
+        />
+
+        {/* Dashboard administrator */}
+        <Route
+          path="/admin"
+          element={<AdminDashboard />}
+        />
+
+        {/* Data kunjungan administrator */}
+        <Route
+          path="/admin/kunjungan"
+          element={<AdminKunjungan />}
+        />
+
+        {/* Kelola obat administrator */}
+        <Route
+          path="/admin/obat"
+          element={<AdminObat />}
+        />
+
+        {/* Kelola tips kesehatan administrator */}
+        <Route
+          path="/admin/tips"
+          element={<AdminTips />}
         />
 
         {/* Kalau halaman tidak ditemukan */}
