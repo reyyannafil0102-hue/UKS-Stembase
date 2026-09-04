@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Obat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ObatController extends Controller
@@ -12,6 +13,17 @@ class ObatController extends Controller
     public function index()
     {
         $obats = Obat::latest()->get();
+        $isAdmin = Auth::check() && Auth::user()->role_id == 1;
+
+        $obats = $obats->map(function ($obat) use ($isAdmin) {
+            $data = $obat->toArray();
+
+            if (! $isAdmin) {
+                unset($data['keterangan']);
+            }
+
+            return $data;
+        });
 
         return response()->json([
             'message' => 'Data obat berhasil diambil',
@@ -34,7 +46,6 @@ class ObatController extends Controller
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
         ]);
 
         $data = [
@@ -42,7 +53,6 @@ class ObatController extends Controller
             'kegunaan' => $request->kegunaan,
             'stok' => $request->stok,
             'satuan' => $request->satuan,
-            'keterangan' => $request->keterangan,
         ];
 
         if ($request->hasFile('foto')) {
@@ -72,7 +82,6 @@ class ObatController extends Controller
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
         ]);
 
         $obat = Obat::findOrFail($id);
@@ -82,7 +91,6 @@ class ObatController extends Controller
             'kegunaan' => $request->kegunaan,
             'stok' => $request->stok,
             'satuan' => $request->satuan,
-            'keterangan' => $request->keterangan,
         ];
 
         if ($request->hasFile('foto')) {

@@ -36,7 +36,6 @@ const emptyForm = {
   kegunaan: "",
   stok: "",
   satuan: "",
-  keterangan: "",
   foto: null,
 };
 
@@ -59,6 +58,7 @@ export default function Obat() {
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     const loadObats = async () => {
@@ -100,6 +100,7 @@ export default function Obat() {
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
+    setPreviewImage(null);
     setFormError("");
     setShowForm(true);
   };
@@ -110,20 +111,34 @@ export default function Obat() {
       kegunaan: obat.kegunaan,
       stok: obat.stok,
       satuan: obat.satuan,
-      keterangan: obat.keterangan || "",
       foto: null,
     });
+    setPreviewImage(obat.foto ? `${storageUrl}/${obat.foto}` : null);
     setFormError("");
     setShowForm(true);
   };
   const closeForm = () => {
     setEditing(null);
     setForm(emptyForm);
+    setPreviewImage(null);
     setFormError("");
     setShowForm(false);
   };
   const updateForm = (event) => {
     const { name, value, files } = event.target;
+
+    if (name === "foto" && files && files[0]) {
+      const file = files[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewImage(objectUrl);
+      setForm((current) => ({ ...current, [name]: file }));
+      return;
+    }
+
+    if (name === "foto") {
+      setPreviewImage(editing?.foto ? `${storageUrl}/${editing.foto}` : null);
+    }
+
     setForm((current) => ({ ...current, [name]: files ? files[0] : value }));
   };
 
@@ -468,16 +483,6 @@ export default function Obat() {
                 />
               </label>
               <label className="text-sm font-semibold text-slate-700 sm:col-span-2">
-                Keterangan
-                <textarea
-                  name="keterangan"
-                  value={form.keterangan}
-                  onChange={updateForm}
-                  rows={3}
-                  className="mt-2 w-full resize-none rounded-lg border border-slate-200 px-4 py-3 text-sm font-normal outline-none focus:border-emerald-500"
-                />
-              </label>
-              <label className="text-sm font-semibold text-slate-700 sm:col-span-2">
                 Foto
                 <input
                   name="foto"
@@ -486,6 +491,15 @@ export default function Obat() {
                   onChange={updateForm}
                   className="mt-2 block w-full rounded-lg border border-slate-200 p-2 text-sm font-normal text-slate-500"
                 />
+                {previewImage && (
+                  <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-2">
+                    <img
+                      src={previewImage}
+                      alt="Preview obat"
+                      className="h-32 w-full rounded-lg object-contain"
+                    />
+                  </div>
+                )}
               </label>
             </div>
             <div className="mt-6 flex justify-end gap-3">
