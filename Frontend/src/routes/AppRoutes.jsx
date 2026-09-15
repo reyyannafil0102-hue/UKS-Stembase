@@ -14,6 +14,7 @@ import AdminDashboard from "../pages/admin/Dashboard";
 import AdminKunjungan from "../pages/admin/Kunjungan";
 import AdminObat from "../pages/admin/Obat";
 import AdminTips from "../pages/admin/TipsKesehatan";
+import AdminInventaris from "../pages/admin/Inventaris";
 
 function AppRoutes() {
   return (
@@ -102,6 +103,12 @@ function AppRoutes() {
         <Route
           path="/admin/obat"
           element={<AdminObat />}
+        />
+
+        {/* Tambah inventaris administrator */}
+        <Route
+          path="/admin/inventaris"
+          element={<AdminInventaris />}
         />
 
         {/* Kelola tips kesehatan administrator */}

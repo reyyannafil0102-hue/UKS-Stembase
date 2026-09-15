@@ -55,6 +55,9 @@ export default function Kunjungan() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedVisit, setSelectedVisit] = useState(null);
+  const [tindakan, setTindakan] = useState("");
+  const [saving, setSaving] = useState(false);
   const perPage = 8;
 
   useEffect(() => {
@@ -84,6 +87,50 @@ export default function Kunjungan() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
+  };
+  const openCompletionForm = (visit) => {
+    setSelectedVisit(visit);
+    setTindakan(visit.tindakan || "");
+    setError("");
+  };
+  const closeCompletionForm = () => {
+    if (saving) return;
+    setSelectedVisit(null);
+    setTindakan("");
+  };
+  const handleCompleteVisit = async (event) => {
+    event.preventDefault();
+    if (!selectedVisit || !tindakan.trim()) return;
+
+    setSaving(true);
+    setError("");
+    try {
+      const response = await api.put(`/admin/kunjungan/${selectedVisit.id}`, {
+        tindakan: tindakan.trim(),
+        status: "selesai",
+      });
+      const updatedVisit = response.data.kunjungan;
+      setKunjungans((currentVisits) =>
+        currentVisits.map((visit) =>
+          visit.id === updatedVisit.id ? { ...visit, ...updatedVisit } : visit,
+        ),
+      );
+      setSelectedVisit(null);
+      setTindakan("");
+    } catch (requestError) {
+      if (requestError.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+        return;
+      }
+      setError(
+        requestError.response?.data?.message ||
+          "Status kunjungan belum dapat diperbarui.",
+      );
+    } finally {
+      setSaving(false);
+    }
   };
   const filteredVisits = useMemo(
     () =>
@@ -317,7 +364,7 @@ export default function Kunjungan() {
                   </p>
                 </div>
               ) : (
-                <table className="w-full min-w-[820px] text-left text-sm">
+                <table className="w-full min-w-205 text-left text-sm">
                   <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-400">
                     <tr>
                       {[
@@ -328,6 +375,7 @@ export default function Kunjungan() {
                         "Keluhan",
                         "Masuk",
                         "Status",
+                        "Aksi",
                       ].map((heading) => (
                         <th key={heading} className="px-6 py-4 font-semibold">
                           {heading}
@@ -365,6 +413,17 @@ export default function Kunjungan() {
                           >
                             {visit.status || "menunggu"}
                           </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          {visit.status !== "selesai" && (
+                            <button
+                              type="button"
+                              onClick={() => openCompletionForm(visit)}
+                              className="whitespace-nowrap rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                            >
+                              Tandai selesai
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -473,6 +532,49 @@ export default function Kunjungan() {
           </section>
         </div>
       </main>
+      {selectedVisit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+          <form
+            onSubmit={handleCompleteVisit}
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+          >
+            <h3 className="text-lg font-bold text-slate-800">
+              Selesaikan kunjungan
+            </h3>
+            <p className="mt-1 text-sm text-slate-500">
+              Catat tindakan untuk {selectedVisit.nama || selectedVisit.user?.name || "pengunjung"}.
+            </p>
+            <label className="mt-5 block text-sm font-semibold text-slate-700">
+              Tindakan
+              <textarea
+                value={tindakan}
+                onChange={(event) => setTindakan(event.target.value)}
+                required
+                rows={4}
+                className="mt-2 w-full rounded-lg border border-slate-200 p-3 text-sm font-normal outline-none focus:border-emerald-500"
+                placeholder="Contoh: Istirahat dan minum obat sesuai anjuran."
+              />
+            </label>
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeCompletionForm}
+                disabled={saving}
+                className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={saving || !tindakan.trim()}
+                className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+              >
+                {saving ? "Menyimpan..." : "Simpan sebagai selesai"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
