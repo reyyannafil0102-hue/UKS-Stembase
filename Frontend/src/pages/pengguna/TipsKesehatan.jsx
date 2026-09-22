@@ -11,6 +11,7 @@ import {
   PackageSearch,
   Pill,
   User,
+  X,
 } from "lucide-react";
 import api from "../../services/api";
 import MobileMenu from "../../components/MobileMenu";
@@ -25,16 +26,7 @@ const menuItems = [
   { label: "Profil Saya", path: "/profil", icon: User },
 ];
 
-const tipColors = [
-  "bg-orange-50",
-  "bg-sky-50",
-  "bg-amber-50",
-  "bg-rose-50",
-  "bg-emerald-50",
-  "bg-violet-50",
-];
 const storageUrl = "http://127.0.0.1:8000/storage";
-
 const getTipImageUrl = (gambar) => {
   if (!gambar) return "";
   if (/^https?:\/\//i.test(gambar)) return gambar;
@@ -53,6 +45,7 @@ export default function TipsKesehatan() {
   const [tips, setTips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedTip, setSelectedTip] = useState(null);
 
   useEffect(() => {
     const loadTips = async () => {
@@ -168,15 +161,6 @@ export default function TipsKesehatan() {
         </header>
 
         <div className="px-6 py-7 sm:px-8 lg:px-10 xl:px-12">
-          <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
-            <h3 className="text-lg font-bold text-emerald-700">
-              💚 Tips Sehat untuk Siswa
-            </h3>
-            <p className="mt-1 text-sm text-emerald-700/70">
-              Kebiasaan sederhana sehari-hari dapat membantu menjaga tubuh tetap
-              sehat dan siap mengikuti kegiatan di sekolah.
-            </p>
-          </section>
           {error && (
             <div className="mt-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
@@ -191,52 +175,70 @@ export default function TipsKesehatan() {
               Belum ada tips kesehatan.
             </div>
           ) : (
-            <div className="mt-6 flex snap-x gap-6 overflow-x-auto pb-4">
-              {tips.map((tip, index) => (
-                <article
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {tips.map((tip) => (
+                <button
                   key={tip.id}
-                  className="w-[min(88vw,400px)] min-w-[min(88vw,400px)] shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                  type="button"
+                  onClick={() => tip.gambar && setSelectedTip(tip)}
+                  disabled={!tip.gambar}
+                  className="group w-full max-w-65 overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg disabled:cursor-default disabled:hover:translate-y-0 disabled:hover:shadow-sm"
                 >
-                  <div
-                    className={`flex h-48 items-center justify-center ${tipColors[index % tipColors.length]}`}
-                  >
-                    {tip.gambar ? (
-                      <img
-                        src={getTipImageUrl(tip.gambar)}
-                        alt={tip.judul}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Lightbulb size={64} className="text-amber-500" />
-                    )}
-                  </div>
-                  <div className="min-h-96 p-6">
-                    <p className="text-xs font-bold uppercase tracking-wide text-emerald-600">
-                      Tips {String(index + 1).padStart(2, "0")}
+                  {tip.gambar ? (
+                    <img
+                      src={getTipImageUrl(tip.gambar)}
+                      alt={tip.judul || "Poster tips kesehatan"}
+                      className="aspect-3/4 w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  ) : (
+                    <div className="flex aspect-3/4 items-center justify-center bg-slate-50">
+                      <Lightbulb size={48} className="text-slate-300" />
+                    </div>
+                  )}
+                  <div className="border-t border-slate-100 px-4 py-3">
+                    <p className="truncate text-sm font-semibold text-slate-700">
+                      {tip.judul || "Poster Tips Kesehatan"}
                     </p>
-                    <h3 className="mt-3 text-lg font-bold text-slate-800">
-                      {tip.judul}
-                    </h3>
-                    <p className="mt-4 text-base leading-7 text-slate-400">
+                    <p className="mt-1 line-clamp-3 text-xs leading-5 text-slate-400">
                       {tip.isi}
                     </p>
                   </div>
-                </article>
+                </button>
               ))}
             </div>
           )}
-          <div className="mt-6 flex items-start gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
-            <span className="rounded-lg bg-emerald-50 px-2 py-1 text-emerald-600">
-              💡
-            </span>
-            <p>
-              <span className="font-semibold text-emerald-600">Ingat!</span>{" "}
-              Jaga tubuh tetap sehat, jangan memaksakan diri, dan segera
-              beristirahat jika merasa kurang enak badan.
-            </p>
-          </div>
         </div>
       </main>
+      {selectedTip?.gambar && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Preview poster tips kesehatan"
+          onClick={() => setSelectedTip(null)}
+        >
+          <div
+            className="relative flex max-h-full max-w-4xl flex-col items-center gap-4"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              src={getTipImageUrl(selectedTip.gambar)}
+              alt={selectedTip.judul || "Poster tips kesehatan"}
+              className="max-h-[calc(100vh-8rem)] max-w-full rounded-xl object-contain shadow-2xl"
+            />
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                aria-label="Tutup preview poster"
+                onClick={() => setSelectedTip(null)}
+                className="rounded-lg bg-white/10 p-2.5 text-white transition hover:bg-white/20"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

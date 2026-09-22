@@ -94,7 +94,7 @@ export default function TipsKesehatan() {
   };
   const openEdit = (tip) => {
     setEditing(tip);
-    setForm({ judul: tip.judul, isi: tip.isi, gambar: null });
+    setForm({ judul: tip.judul || "", isi: tip.isi || "", gambar: null });
     setPreviewImage(
       tip.gambar
         ? tip.gambar.startsWith("http")
@@ -404,17 +404,13 @@ export default function TipsKesehatan() {
               </div>
             )}
             <label className="mt-6 block text-sm font-semibold text-slate-700">
-              Judul Tips
+              Judul Poster
               <input
                 name="judul"
                 value={form.judul}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    judul: event.target.value,
-                  }))
-                }
+                onChange={updateForm}
                 required
+                placeholder="Masukkan judul poster"
                 className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500"
               />
             </label>
@@ -423,14 +419,10 @@ export default function TipsKesehatan() {
               <textarea
                 name="isi"
                 value={form.isi}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    isi: event.target.value,
-                  }))
-                }
+                onChange={updateForm}
                 required
-                rows={6}
+                rows={4}
+                placeholder="Masukkan penjelasan tips"
                 className="mt-2 w-full resize-none rounded-lg border border-slate-200 px-4 py-3 text-sm font-normal outline-none focus:border-emerald-500"
               />
             </label>

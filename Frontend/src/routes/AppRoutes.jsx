@@ -15,6 +15,7 @@ import AdminKunjungan from "../pages/admin/Kunjungan";
 import AdminObat from "../pages/admin/Obat";
 import AdminTips from "../pages/admin/TipsKesehatan";
 import AdminInventaris from "../pages/admin/Inventaris";
+import AdminUsers from "../pages/admin/UsersData";
 
 function AppRoutes() {
   return (
@@ -97,6 +98,12 @@ function AppRoutes() {
         <Route
           path="/admin/kunjungan"
           element={<AdminKunjungan />}
+        />
+
+        {/* Data pengguna administrator */}
+        <Route
+          path="/admin/users"
+          element={<AdminUsers />}
         />
 
         {/* Kelola obat administrator */}

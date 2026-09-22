@@ -178,13 +178,15 @@ export default function Kunjungan() {
     1,
   );
   const visitorGroups = useMemo(() => {
-    const groups = { Guru: 0, Petugas: 0, Siswa: 0 };
+    const groups = { Guru: 0, Siswa: 0 };
     kunjungans.forEach((visit) => {
-      const role = (visit.user?.role?.nama_role || "Pengguna").toLowerCase();
-      if (role.includes("guru")) groups.Guru += 1;
-      else if (role.includes("admin") || role.includes("petugas"))
-        groups.Petugas += 1;
-      else groups.Siswa += 1;
+      if (visit.jenis_pengguna === "Guru") groups.Guru += 1;
+      else if (visit.jenis_pengguna === "Siswa") groups.Siswa += 1;
+      else {
+        const role = (visit.user?.role?.nama_role || "").toLowerCase();
+        if (role.includes("guru")) groups.Guru += 1;
+        else groups.Siswa += 1;
+      }
     });
     return groups;
   }, [kunjungans]);
@@ -311,7 +313,7 @@ export default function Kunjungan() {
                   Riwayat Kunjungan
                 </h3>
                 <p className="mt-1 text-sm text-slate-400">
-                  Kelola kunjungan siswa ke UKS.
+                  Kelola kunjungan guru dan siswa ke UKS.
                 </p>
               </div>
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -370,6 +372,7 @@ export default function Kunjungan() {
                       {[
                         "No",
                         "Tanggal",
+                        "Jenis",
                         "Nama",
                         "Kelas",
                         "Keluhan",
@@ -392,11 +395,16 @@ export default function Kunjungan() {
                         <td className="whitespace-nowrap px-6 py-4 text-slate-500">
                           {formatDate(visit.waktu_masuk)}
                         </td>
+                        <td className="px-6 py-4 text-slate-500">
+                          {visit.jenis_pengguna || "-"}
+                        </td>
                         <td className="px-6 py-4 font-semibold text-slate-700">
                           {visit.nama || visit.user?.name || "-"}
                         </td>
                         <td className="px-6 py-4 text-slate-500">
-                          {visit.kelas || visit.user?.kelas || "-"}
+                          {visit.jenis_pengguna === "Guru"
+                            ? "-"
+                            : visit.kelas || visit.user?.kelas || "-"}
                         </td>
                         <td className="max-w-56 px-6 py-4 text-slate-500">
                           {visit.keluhan || "-"}
@@ -498,9 +506,9 @@ export default function Kunjungan() {
                   <div
                     className="h-40 w-40 shrink-0 rounded-full"
                     role="img"
-                    aria-label={`Grafik kategori pengunjung: Guru ${visitorPercentages.Guru} persen, Petugas ${visitorPercentages.Petugas} persen, Siswa ${visitorPercentages.Siswa} persen`}
+                    aria-label={`Grafik kategori pengunjung: Guru ${visitorPercentages.Guru} persen, Siswa ${visitorPercentages.Siswa} persen`}
                     style={{
-                      background: `conic-gradient(#10b981 0 ${visitorPercentages.Guru}%, #fbbf24 ${visitorPercentages.Guru}% ${visitorPercentages.Guru + visitorPercentages.Petugas}%, #64748b ${visitorPercentages.Guru + visitorPercentages.Petugas}% 100%)`,
+                      background: `conic-gradient(#10b981 0 ${visitorPercentages.Guru}%, #64748b ${visitorPercentages.Guru}% 100%)`,
                     }}
                   />
                   <div className="space-y-3 text-xs">
@@ -509,13 +517,6 @@ export default function Kunjungan() {
                       Guru{" "}
                       <strong className="text-slate-700">
                         {visitorGroups.Guru} ({visitorPercentages.Guru}%)
-                      </strong>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <span className="h-3 w-3 rounded-full bg-amber-400" />
-                      Petugas{" "}
-                      <strong className="text-slate-700">
-                        {visitorGroups.Petugas} ({visitorPercentages.Petugas}%)
                       </strong>
                     </div>
                     <div className="flex items-center gap-2 text-slate-500">
