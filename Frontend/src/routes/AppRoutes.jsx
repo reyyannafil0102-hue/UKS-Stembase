@@ -15,6 +15,7 @@ import AdminKunjungan from "../pages/admin/Kunjungan";
 import AdminObat from "../pages/admin/Obat";
 import AdminTips from "../pages/admin/TipsKesehatan";
 import AdminInventaris from "../pages/admin/Inventaris";
+import AdminEvent from "../pages/admin/Event";
 import AdminUsers from "../pages/admin/UsersData";
 
 function AppRoutes() {
@@ -122,6 +123,12 @@ function AppRoutes() {
         <Route
           path="/admin/tips"
           element={<AdminTips />}
+        />
+
+        {/* Kelola event UKS administrator */}
+        <Route
+          path="/admin/event"
+          element={<AdminEvent />}
         />
 
         {/* Kalau halaman tidak ditemukan */}

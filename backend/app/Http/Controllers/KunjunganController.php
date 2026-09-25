@@ -30,7 +30,7 @@ class KunjunganController extends Controller
             ], 403);
         }
 
-        $kunjungans = Kunjungan::with('user')
+        $kunjungans = Kunjungan::with('user.role')
             ->latest('waktu_masuk')
             ->get();
 
