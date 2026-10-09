@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   ClipboardCheck,
   Edit3,
@@ -306,14 +305,6 @@ export default function TipsKesehatan() {
             </p>
           </div>
           <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
-            >
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
                 {user?.foto ? (
@@ -328,7 +319,7 @@ export default function TipsKesehatan() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Administrator"}
+                  {user?.name || "Administrator"}
                 </p>
                 <p className="text-xs text-slate-400">Administrator</p>
               </div>
@@ -399,7 +390,7 @@ export default function TipsKesehatan() {
                         "Status",
                         "Aksi",
                       ].map((heading) => (
-                        <th key={heading} className="px-6 py-4 font-semibold">
+                        <th key={heading} className={`px-6 py-4 font-semibold ${heading === "Aksi" ? "min-w-36 pl-10" : ""}`}>
                           {heading}
                         </th>
                       ))}
@@ -425,18 +416,20 @@ export default function TipsKesehatan() {
                           )}
                         </td>
                         <td className="max-w-48 px-6 py-4 font-semibold text-slate-700">
+                          <p className="line-clamp-2 [overflow-wrap:anywhere]">
                           {tip.judul}
+                          </p>
                         </td>
                         <td className="max-w-72 px-6 py-4 text-slate-500">
-                          {tip.isi}
+                          <p className="line-clamp-2 [overflow-wrap:anywhere]">{tip.isi}</p>
                         </td>
                         <td className="px-6 py-4">
                           <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
                             Aktif
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
+                        <td className="min-w-36 px-6 py-4 pl-10">
+                          <div className="flex items-center gap-3">
                             <button
                               type="button"
                               aria-label={`Edit ${tip.judul}`}

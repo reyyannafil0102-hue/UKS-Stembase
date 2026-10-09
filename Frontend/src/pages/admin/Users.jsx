@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, CalendarDays, CheckCircle2, ClipboardCheck, Edit3, HeartPulse, Home as HomeIcon, Lightbulb, LockKeyhole, LogOut, PackageSearch, Pill, Save, User, UserRound, UsersRound, X } from "lucide-react";
+import { CalendarDays, CheckCircle2, ClipboardCheck, Edit3, HeartPulse, Home as HomeIcon, Lightbulb, LockKeyhole, LogOut, PackageSearch, Pill, Save, User, UserRound, UsersRound, X } from "lucide-react";
 import api from "../../services/api";
 import schoolImage from "../../assets/images/Logo-SMKN-7-Semarang.png";
+import ImageUrlPreview from "../../components/ImageUrlPreview";
 
 const menuItems = [
 	{ label: "Dashboard", path: "/admin", icon: HomeIcon },
@@ -29,10 +30,12 @@ export default function Users() {
 	const [kunjungans, setKunjungans] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [showEdit, setShowEdit] = useState(false);
+	const [showPhotoEdit, setShowPhotoEdit] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [saving, setSaving] = useState(false);
 	const [message, setMessage] = useState("");
 	const [error, setError] = useState("");
+	const [photoUrl, setPhotoUrl] = useState("");
 	const [profileForm, setProfileForm] = useState({ name: "", email: "" });
 	const [passwordForm, setPasswordForm] = useState({ current_password: "", password: "", password_confirmation: "" });
 
@@ -88,6 +91,33 @@ export default function Users() {
 		}
 	};
 
+	const openPhotoEdit = () => {
+		setPhotoUrl(/^https?:\/\//i.test(user?.foto || "") ? user.foto : "");
+		setMessage("");
+		setError("");
+		setShowPhotoEdit(true);
+	};
+
+	const savePhoto = async (event) => {
+		event.preventDefault();
+		setSaving(true);
+		setMessage("");
+		setError("");
+		try {
+			const response = photoUrl.trim()
+				? await api.post("/user/foto", { foto: photoUrl.trim() })
+				: await api.delete("/user/foto");
+			setUser(response.data.user);
+			localStorage.setItem("user", JSON.stringify(response.data.user));
+			setShowPhotoEdit(false);
+			setMessage(response.data.message || "Foto profil berhasil diperbarui.");
+		} catch (requestError) {
+			setError(requestError.response?.data?.message || "Foto profil belum dapat diperbarui.");
+		} finally {
+			setSaving(false);
+		}
+	};
+
 	const changePassword = async (event) => {
 		event.preventDefault();
 		setSaving(true);
@@ -114,13 +144,13 @@ export default function Users() {
 			</aside>
 
 			<main className="min-h-screen lg:ml-64">
-				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10"><div><h2 className="text-2xl font-extrabold text-slate-800">Profil</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Profil Saya</p></div><div className="flex items-center gap-5"><button type="button" aria-label="Notifikasi" className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"><Bell size={18} /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" /></button><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <UserRound size={19} className="text-emerald-600" />}</div><div className="hidden sm:block"><p className="text-sm font-bold text-slate-700">Hai, {user?.name || "Administrator"}</p><p className="text-xs text-slate-400">Administrator</p></div></div></div></header>
+				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10"><div><h2 className="text-2xl font-extrabold text-slate-800">Profil</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Profil Saya</p></div><div className="flex items-center gap-5"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <UserRound size={19} className="text-emerald-600" />}</div><div className="hidden sm:block"><p className="text-sm font-bold text-slate-700">{user?.name || "Administrator"}</p><p className="text-xs text-slate-400">Administrator</p></div></div></div></header>
 
 				<div className="px-6 py-7 sm:px-8 lg:px-10 xl:px-12">
 					<section className="relative h-44 overflow-hidden rounded-2xl shadow-sm sm:h-48"><img src={schoolImage} alt="Latar ruang UKS" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-slate-950/65" /><div className="absolute inset-0 flex flex-col items-center justify-center text-white"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <UserRound size={30} className="text-slate-700" />}</div><h1 className="mt-2 text-lg font-bold">{user?.name || "Administrator"}</h1><p className="text-xs text-emerald-300">Administrator • UKS STEMBASE</p></div></section>
 
 					<div className="mt-5 grid gap-5 xl:grid-cols-2">
-						<section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex items-center justify-between gap-3"><div className="flex items-center gap-2"><UserRound size={16} className="text-emerald-600" /><h3 className="text-sm font-bold text-slate-800">Data Diri</h3></div><button type="button" onClick={openEditProfile} className="flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"><Edit3 size={14} />Edit</button></div><dl className="mt-4 divide-y divide-slate-100 text-xs"><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Nama Lengkap</dt><dd className="text-right font-semibold text-slate-700">{user?.name || "-"}</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Email</dt><dd className="max-w-[65%] break-all text-right font-semibold text-slate-700">{user?.email || "-"}</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Peran</dt><dd className="text-right font-semibold text-emerald-600">Administrator</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Status Akun</dt><dd className="text-right font-semibold text-emerald-600">Aktif</dd></div></dl></section>
+						<section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex items-center justify-between gap-3"><div className="flex items-center gap-2"><UserRound size={16} className="text-emerald-600" /><h3 className="text-sm font-bold text-slate-800">Data Diri</h3></div><div className="flex gap-2"><button type="button" onClick={openPhotoEdit} className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"><Edit3 size={14} />Foto</button><button type="button" onClick={openEditProfile} className="flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"><Edit3 size={14} />Edit</button></div></div><dl className="mt-4 divide-y divide-slate-100 text-xs"><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Nama Lengkap</dt><dd className="text-right font-semibold text-slate-700">{user?.name || "-"}</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Email</dt><dd className="max-w-[65%] break-all text-right font-semibold text-slate-700">{user?.email || "-"}</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Peran</dt><dd className="text-right font-semibold text-emerald-600">Administrator</dd></div><div className="flex justify-between gap-4 py-3"><dt className="text-slate-400">Status Akun</dt><dd className="text-right font-semibold text-emerald-600">Aktif</dd></div></dl></section>
 
 						<section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex items-center gap-2"><ClipboardCheck size={16} className="text-emerald-600" /><h3 className="text-sm font-bold text-slate-800">Riwayat Kunjungan UKS</h3></div>{loading ? <p className="mt-6 text-xs text-slate-400">Memuat riwayat...</p> : kunjungans.length === 0 ? <p className="mt-6 text-xs text-slate-400">Belum ada riwayat kunjungan.</p> : <div className="mt-3 space-y-3">{kunjungans.slice(0, 3).map((kunjungan) => <article key={kunjungan.id} className="rounded-lg bg-slate-50 px-4 py-3"><div className="flex items-center justify-between gap-3"><h4 className="text-xs font-bold text-slate-700">{kunjungan.keluhan || "Kunjungan UKS"}</h4><time className="shrink-0 text-[10px] font-semibold text-emerald-600">{formatDate(kunjungan.waktu_masuk)}</time></div><p className="mt-1 text-[10px] text-slate-400">{kunjungan.status || "Menunggu pemeriksaan"}</p></article>)}</div>}</section>
 					</div>
@@ -129,6 +159,7 @@ export default function Users() {
 				</div>
 			</main>
 			{showEdit && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><form onSubmit={saveProfile} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Pengaturan profil</p><h3 className="mt-1 text-xl font-bold text-slate-800">Edit Data Diri</h3></div><button type="button" aria-label="Tutup edit profil" onClick={() => setShowEdit(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X size={18} /></button></div><div className="mt-6 grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold text-slate-700">Nama Lengkap<input value={profileForm.name} onChange={(event) => setProfileForm({ ...profileForm, name: event.target.value })} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">Gmail / Email<input type="email" value={profileForm.email} onChange={(event) => setProfileForm({ ...profileForm, email: event.target.value })} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label></div><div className="mt-6 flex justify-end gap-3"><button type="button" onClick={() => setShowEdit(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50">Batal</button><button type="submit" disabled={saving} className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"><Save size={16} />{saving ? "Menyimpan..." : "Simpan Perubahan"}</button></div></form></div>}
+			{showPhotoEdit && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><form onSubmit={savePhoto} className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Pengaturan profil</p><h3 className="mt-1 text-xl font-bold text-slate-800">Foto Profil</h3></div><button type="button" aria-label="Tutup foto profil" onClick={() => setShowPhotoEdit(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X size={18} /></button></div><label className="mt-6 block text-sm font-semibold text-slate-700">URL Foto<input type="url" maxLength={2048} value={photoUrl} onChange={(event) => setPhotoUrl(event.target.value)} placeholder="https://... (Direct link ImgBB)" className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><p className="mt-2 text-xs text-slate-400">Tempel direct link gambar. Biarkan kosong untuk menghapus foto.</p>{/^https?:\/\//i.test(photoUrl.trim()) && <ImageUrlPreview src={photoUrl.trim()} alt="Preview foto profil" className="mx-auto mt-4 h-32 w-full rounded-lg object-contain" />}<div className="mt-6 flex justify-end gap-3"><button type="button" onClick={() => setShowPhotoEdit(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50">Batal</button><button type="submit" disabled={saving} className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"><Save size={16} />{saving ? "Menyimpan..." : "Simpan Foto"}</button></div></form></div>}
 			{showPassword && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><form onSubmit={changePassword} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Keamanan akun</p><h3 className="mt-1 text-xl font-bold text-slate-800">Ganti Password</h3></div><button type="button" aria-label="Tutup ganti password" onClick={() => setShowPassword(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X size={18} /></button></div><label className="mt-6 block text-sm font-semibold text-slate-700">Password Lama<input type="password" value={passwordForm.current_password} onChange={(event) => setPasswordForm({ ...passwordForm, current_password: event.target.value })} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="mt-4 block text-sm font-semibold text-slate-700">Password Baru<input type="password" minLength={8} value={passwordForm.password} onChange={(event) => setPasswordForm({ ...passwordForm, password: event.target.value })} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="mt-4 block text-sm font-semibold text-slate-700">Konfirmasi Password Baru<input type="password" minLength={8} value={passwordForm.password_confirmation} onChange={(event) => setPasswordForm({ ...passwordForm, password_confirmation: event.target.value })} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><div className="mt-6 flex justify-end gap-3"><button type="button" onClick={() => setShowPassword(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50">Batal</button><button type="submit" disabled={saving} className="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60">{saving ? "Menyimpan..." : "Ganti Password"}</button></div></form></div>}
 		</div>
 	);

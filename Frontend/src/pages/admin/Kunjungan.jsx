@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   CheckCircle2,
   ClipboardCheck,
@@ -256,14 +255,6 @@ export default function Kunjungan() {
             </p>
           </div>
           <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
-            >
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
                 {user?.foto ? (
@@ -278,7 +269,7 @@ export default function Kunjungan() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Administrator"}
+                  {user?.name || "Administrator"}
                 </p>
                 <p className="text-xs text-slate-400">Administrator</p>
               </div>
@@ -380,7 +371,7 @@ export default function Kunjungan() {
                         "Status",
                         "Aksi",
                       ].map((heading) => (
-                        <th key={heading} className="px-6 py-4 font-semibold">
+                        <th key={heading} className={`px-6 py-4 font-semibold ${heading === "Aksi" ? "min-w-44 pl-10" : ""}`}>
                           {heading}
                         </th>
                       ))}
@@ -398,8 +389,8 @@ export default function Kunjungan() {
                         <td className="px-6 py-4 text-slate-500">
                           {visit.jenis_pengguna || "-"}
                         </td>
-                        <td className="px-6 py-4 font-semibold text-slate-700">
-                          {visit.nama || visit.user?.name || "-"}
+                        <td className="max-w-48 px-6 py-4 font-semibold text-slate-700">
+                          <span className="line-clamp-2 [overflow-wrap:anywhere]">{visit.nama || visit.user?.name || "-"}</span>
                         </td>
                         <td className="px-6 py-4 text-slate-500">
                           {visit.jenis_pengguna === "Guru"
@@ -407,7 +398,7 @@ export default function Kunjungan() {
                             : visit.kelas || visit.user?.kelas || "-"}
                         </td>
                         <td className="max-w-56 px-6 py-4 text-slate-500">
-                          {visit.keluhan || "-"}
+                          <p className="line-clamp-2 [overflow-wrap:anywhere]">{visit.keluhan || "-"}</p>
                         </td>
                         <td className="px-6 py-4 text-slate-500">
                           <span className="flex items-center gap-2">
@@ -422,7 +413,7 @@ export default function Kunjungan() {
                             {visit.status || "menunggu"}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="min-w-44 whitespace-nowrap px-6 py-4 pl-10">
                           {visit.status !== "selesai" && (
                             <button
                               type="button"

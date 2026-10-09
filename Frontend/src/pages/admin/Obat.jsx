@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   ClipboardCheck,
   Edit3,
@@ -228,14 +227,6 @@ export default function Obat() {
             </p>
           </div>
           <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
-            >
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
                 {user?.foto ? (
@@ -250,7 +241,7 @@ export default function Obat() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Administrator"}
+                  {user?.name || "Administrator"}
                 </p>
                 <p className="text-xs text-slate-400">Administrator</p>
               </div>
@@ -333,7 +324,7 @@ export default function Obat() {
                         "Foto",
                         "Aksi",
                       ].map((heading) => (
-                        <th key={heading} className="px-6 py-4 font-semibold">
+                        <th key={heading} className={`px-6 py-4 font-semibold ${heading === "Aksi" ? "min-w-36 pl-10" : ""}`}>
                           {heading}
                         </th>
                       ))}
@@ -345,8 +336,10 @@ export default function Obat() {
                         <td className="px-6 py-4 text-slate-400">
                           {index + 1}
                         </td>
-                        <td className="px-6 py-4 font-semibold text-slate-700">
+                        <td className="max-w-56 px-6 py-4 font-semibold text-slate-700">
+                          <span className="line-clamp-2 [overflow-wrap:anywhere]">
                           {obat.nama_obat}
+                          </span>
                         </td>
                         <td
                           className={`px-6 py-4 font-bold ${obat.stok > 0 ? "text-emerald-600" : "text-red-500"}`}
@@ -369,8 +362,8 @@ export default function Obat() {
                             </span>
                           )}
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
+                        <td className="min-w-36 px-6 py-4 pl-10">
+                          <div className="flex items-center gap-3">
                             <button
                               type="button"
                               aria-label={`Edit ${obat.nama_obat}`}
@@ -440,14 +433,18 @@ export default function Obat() {
               </label>
               <label className="text-sm font-semibold text-slate-700">
                 Kegunaan
-                <input
+                <textarea
                   name="kegunaan"
                   value={form.kegunaan}
                   onChange={updateForm}
                   required
-                  placeholder="Contoh: Demam"
-                  className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500"
+                  rows={4}
+                  placeholder={"Contoh:\nDemam\nNyeri"}
+                  className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm font-normal outline-none focus:border-emerald-500"
                 />
+                <span className="mt-1 block text-xs font-normal text-slate-400">
+                  Masukkan semua kegunaan; tulis satu kegunaan pada setiap baris.
+                </span>
               </label>
               <label className="text-sm font-semibold text-slate-700">
                 Stok

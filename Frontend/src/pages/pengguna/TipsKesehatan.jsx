@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   ClipboardCheck,
   Home,
@@ -157,7 +156,7 @@ export default function TipsKesehatan() {
               {selectedTip && (
                 <>
                   <span className="text-emerald-500">›</span>
-                  <span className="max-w-40 truncate text-slate-500">
+                  <span className="max-w-40 [overflow-wrap:anywhere] text-slate-500">
                     {selectedTip.judul}
                   </span>
                 </>
@@ -165,14 +164,6 @@ export default function TipsKesehatan() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 transition hover:bg-emerald-100"
-            >
-              <Bell size={16} />
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-amber-400" />
-            </button>
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-emerald-600 text-sm font-bold text-white">
                 {user?.foto ? (
@@ -237,10 +228,10 @@ export default function TipsKesehatan() {
                     <span className="w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-emerald-700">
                       ♥ Kiat Kesehatan
                     </span>
-                    <h1 className="mt-3 text-xl font-extrabold text-slate-800 sm:text-2xl">
+                    <h1 className="mt-3 [overflow-wrap:anywhere] text-xl font-extrabold text-slate-800 sm:text-2xl">
                       {selectedTip.judul || "Kiat Kesehatan"}
                     </h1>
-                    <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-slate-500">
+                    <p className="mt-2 whitespace-pre-line [overflow-wrap:anywhere] text-xs leading-relaxed text-slate-500">
                       {selectedTip.isi}
                     </p>
                   </div>
@@ -249,10 +240,10 @@ export default function TipsKesehatan() {
                 <div className="space-y-5 p-5 sm:p-7 lg:p-8">
                   {(detail.section_title?.trim() || detail.section_body?.trim()) && (
                     <section>
-                      <h2 className="text-sm font-bold text-slate-800">
+                      <h2 className="[overflow-wrap:anywhere] text-sm font-bold text-slate-800">
                         {detail.section_title || "Mengapa Ini Penting?"}
                       </h2>
-                      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600">
+                      <p className="mt-2 whitespace-pre-line [overflow-wrap:anywhere] text-sm leading-6 text-slate-600">
                         {detail.section_body}
                       </p>
                     </section>
@@ -273,12 +264,12 @@ export default function TipsKesehatan() {
                               {benefit.icon || "💚"}
                             </span>
                             {benefit.title && (
-                              <h3 className="mt-1 text-xs font-bold text-slate-800">
+                              <h3 className="mt-1 [overflow-wrap:anywhere] text-xs font-bold text-slate-800">
                                 {benefit.title}
                               </h3>
                             )}
                             {benefit.description && (
-                              <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                              <p className="mt-1 [overflow-wrap:anywhere] text-[11px] leading-relaxed text-slate-500">
                                 {benefit.description}
                               </p>
                             )}
@@ -302,7 +293,7 @@ export default function TipsKesehatan() {
                             <span className="font-semibold text-emerald-700">
                               {index + 1}.
                             </span>
-                            <span>{step}</span>
+                            <span className="[overflow-wrap:anywhere]">{step}</span>
                           </li>
                         ))}
                       </ol>
@@ -310,7 +301,7 @@ export default function TipsKesehatan() {
                   )}
 
                   {detail.reminder && (
-                    <aside className="rounded-lg bg-emerald-50 px-3 py-2.5 text-[11px] leading-relaxed text-emerald-800">
+                    <aside className="rounded-lg bg-emerald-50 px-3 py-2.5 [overflow-wrap:anywhere] text-[11px] leading-relaxed text-emerald-800">
                       <span className="font-bold">♥ Ingat!</span>{" "}
                       {detail.reminder}
                     </aside>
@@ -378,10 +369,10 @@ export default function TipsKesehatan() {
                       <p className="text-[9px] font-extrabold uppercase tracking-wide text-emerald-600">
                         Kiat {String(index + 1).padStart(2, "0")}
                       </p>
-                      <h3 className="mt-1 line-clamp-1 text-xs font-bold text-slate-800">
+                      <h3 className="mt-1 [overflow-wrap:anywhere] text-xs font-bold text-slate-800">
                         {tip.judul || "Kiat Kesehatan"}
                       </h3>
-                      <p className="mt-1 line-clamp-3 min-h-10 text-[10px] leading-relaxed text-slate-500">
+                      <p className="mt-1 min-h-10 [overflow-wrap:anywhere] text-[10px] leading-relaxed text-slate-500">
                         {tip.isi}
                       </p>
                     </div>

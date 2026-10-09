@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   ClipboardCheck,
   HeartPulse,
@@ -137,14 +136,6 @@ export default function StokObat() {
             </p>
           </div>
           <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"
-            >
-              <Bell size={21} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
                 {user?.foto ? (
@@ -159,7 +150,7 @@ export default function StokObat() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Pengguna"}
+                  {user?.name || "Pengguna"}
                 </p>
                 <p className="mt-0.5 text-xs text-slate-400">Siswa</p>
               </div>
@@ -196,11 +187,11 @@ export default function StokObat() {
           ) : (
             <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left text-sm">
+                <table className="w-full min-w-[900px] table-fixed text-left text-sm">
                   <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-400">
                     <tr>
                       {['No', 'Foto', 'Nama Obat', 'Kegunaan', 'Stok', 'Satuan'].map((heading) => (
-                        <th key={heading} className="px-5 py-4 font-semibold">{heading}</th>
+                        <th key={heading} className={`px-5 py-4 font-semibold ${heading === "No" ? "w-16" : heading === "Foto" ? "w-24" : heading === "Nama Obat" ? "w-64" : heading === "Kegunaan" ? "w-[360px]" : heading === "Stok" ? "w-24" : "w-32"}`}>{heading}</th>
                       ))}
                     </tr>
                   </thead>
@@ -224,8 +215,8 @@ export default function StokObat() {
                             </div>
                           )}
                         </td>
-                        <td className="px-5 py-4 font-semibold text-slate-700">{obat.nama_obat}</td>
-                        <td className="max-w-md px-5 py-4 text-slate-500">{obat.kegunaan || '-'}</td>
+                        <td className="px-5 py-4 font-semibold text-slate-700"><span className="[overflow-wrap:anywhere]">{obat.nama_obat}</span></td>
+                        <td className="px-5 py-4 text-slate-500"><p className="[overflow-wrap:anywhere]">{obat.kegunaan || '-'}</p></td>
                         <td className={`px-5 py-4 text-base font-bold ${obat.stok > 0 ? 'text-emerald-600' : 'text-red-500'}`}>{obat.stok}</td>
                         <td className="px-5 py-4"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{obat.satuan}</span></td>
                       </tr>

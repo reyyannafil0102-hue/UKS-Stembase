@@ -8,16 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('nisn', 20)->nullable();
-            $table->text('alamat')->nullable();
-        });
+        if (!Schema::hasColumn('users', 'nisn')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('nisn', 20)->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('users', 'alamat')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->text('alamat')->nullable();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['nisn', 'alamat']);
-        });
+        // These columns may predate this migration in existing databases.
     }
 };

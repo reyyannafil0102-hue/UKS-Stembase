@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   User,
   LogOut,
   HeartPulse,
@@ -200,16 +199,6 @@ export default function Home() {
           {/* Bagian kanan */}
           <div className="flex items-center gap-5">
 
-            {/* Notifikasi */}
-            <button
-              type="button"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"
-            >
-              <Bell size={21} />
-
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
-
             {/* User */}
             <div className="flex items-center gap-3">
 
@@ -235,7 +224,7 @@ export default function Home() {
               <div className="hidden sm:block">
 
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Pengguna"}
+                  {user?.name || "Pengguna"}
                 </p>
 
                 <p className="mt-0.5 text-xs text-slate-400">

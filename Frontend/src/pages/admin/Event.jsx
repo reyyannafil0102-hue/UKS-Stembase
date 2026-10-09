@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-	Bell,
 	CalendarDays,
 	ClipboardCheck,
 	Edit3,
@@ -215,16 +214,12 @@ export default function Event() {
 						<p className="mt-1 text-sm text-slate-400">Dashboard &gt; Event UKS</p>
 					</div>
 					<div className="flex items-center gap-5">
-						<button type="button" aria-label="Notifikasi" className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100">
-							<Bell size={18} />
-							<span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-						</button>
 						<div className="flex items-center gap-3">
 							<div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
 								{user?.foto ? <img src={user.foto} alt="Foto admin" className="h-full w-full object-cover" /> : <User size={19} className="text-emerald-600" />}
 							</div>
 							<div className="hidden sm:block">
-								<p className="text-sm font-bold text-slate-700">Hai, {user?.name || "Administrator"}</p>
+								<p className="text-sm font-bold text-slate-700">{user?.name || "Administrator"}</p>
 								<p className="text-xs text-slate-400">Administrator</p>
 							</div>
 						</div>
@@ -255,17 +250,17 @@ export default function Event() {
 						</div>
 						<div className="overflow-x-auto">
 							{loading ? <p className="px-6 py-10 text-sm text-slate-400">Memuat data event...</p> : filteredEvents.length === 0 ? <div className="px-6 py-12 text-center"><CalendarDays size={30} className="mx-auto text-emerald-500" /><p className="mt-2 text-sm font-semibold text-slate-600">Belum ada event yang sesuai.</p></div> : (
-								<table className="w-full min-w-[950px] text-left text-sm">
-									<thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-400"><tr>{["No", "Event", "Tanggal", "Lokasi", "Deskripsi", "Aksi"].map((heading) => <th key={heading} className="px-6 py-4 font-semibold">{heading}</th>)}</tr></thead>
+								<table className="w-full min-w-[950px] table-fixed text-left text-sm">
+									<thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-400"><tr><th className="w-14 px-6 py-4 font-semibold">No</th><th className="w-56 px-6 py-4 font-semibold">Event</th><th className="w-40 px-6 py-4 font-semibold">Tanggal</th><th className="w-44 px-6 py-4 font-semibold">Lokasi</th><th className="w-64 px-6 py-4 font-semibold">Deskripsi</th><th className="w-40 px-6 py-4 pl-10 font-semibold">Aksi</th></tr></thead>
 									<tbody className="divide-y divide-slate-100">
 										{filteredEvents.map((event, index) => (
 											<tr key={event.id} className="hover:bg-slate-50">
 												<td className="px-6 py-4 text-slate-400">{index + 1}</td>
-												<td className="px-6 py-4"><div className="flex items-center gap-3">{event.gambar ? <ZoomableImage src={event.gambar} alt={event.judul} className="h-12 w-16 rounded-lg object-cover" /> : <div className="flex h-12 w-16 items-center justify-center rounded-lg bg-emerald-50"><CalendarDays size={20} className="text-emerald-600" /></div>}<span className="font-semibold text-slate-700">{event.judul}</span></div></td>
+												<td className="px-6 py-4"><div className="flex min-w-0 items-center gap-3">{event.gambar ? <ZoomableImage src={event.gambar} alt={event.judul} className="h-12 w-16 rounded-lg object-cover" /> : <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg bg-emerald-50"><CalendarDays size={20} className="text-emerald-600" /></div>}<span className="line-clamp-2 min-w-0 [overflow-wrap:anywhere] font-semibold text-slate-700">{event.judul}</span></div></td>
 												<td className="whitespace-nowrap px-6 py-4 text-slate-600">{formatDate(event.tanggal)}</td>
-												<td className="px-6 py-4 text-slate-500"><span className="flex items-center gap-2"><MapPin size={15} className="text-emerald-600" />{event.lokasi}</span></td>
-												<td className="max-w-72 px-6 py-4 text-slate-500">{event.deskripsi}</td>
-												<td className="px-6 py-4"><div className="flex items-center gap-2"><button type="button" aria-label={`Edit ${event.judul}`} onClick={() => openEdit(event)} className="rounded-lg p-2 text-sky-600 hover:bg-sky-50"><Edit3 size={16} /></button><button type="button" aria-label={`Hapus ${event.judul}`} onClick={() => deleteEvent(event)} className="rounded-lg p-2 text-red-500 hover:bg-red-50"><Trash2 size={16} /></button></div></td>
+												<td className="px-6 py-4 text-slate-500"><span className="flex min-w-0 items-start gap-2"><MapPin size={15} className="mt-0.5 shrink-0 text-emerald-600" /><span className="line-clamp-2 min-w-0 [overflow-wrap:anywhere]">{event.lokasi}</span></span></td>
+												<td className="px-6 py-4 text-slate-500"><p className="line-clamp-2 [overflow-wrap:anywhere]">{event.deskripsi}</p></td>
+												<td className="min-w-40 px-6 py-4 pl-10"><div className="flex items-center gap-3"><button type="button" aria-label={`Edit ${event.judul}`} onClick={() => openEdit(event)} className="rounded-lg p-2 text-sky-600 hover:bg-sky-50"><Edit3 size={16} /></button><button type="button" aria-label={`Hapus ${event.judul}`} onClick={() => deleteEvent(event)} className="rounded-lg p-2 text-red-500 hover:bg-red-50"><Trash2 size={16} /></button></div></td>
 											</tr>
 										))}
 									</tbody>

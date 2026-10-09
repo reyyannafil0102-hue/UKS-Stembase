@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   CalendarDays,
   ClipboardCheck,
   HeartPulse,
@@ -137,14 +136,6 @@ export default function Inventaris() {
             </p>
           </div>
           <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"
-            >
-              <Bell size={21} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-            </button>
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
                 {user?.foto ? (
@@ -159,7 +150,7 @@ export default function Inventaris() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Pengguna"}
+                  {user?.name || "Pengguna"}
                 </p>
                 <p className="mt-0.5 text-xs text-slate-400">Siswa</p>
               </div>
@@ -196,7 +187,7 @@ export default function Inventaris() {
           ) : (
             <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[780px] text-left text-sm">
+                <table className="w-full min-w-[900px] table-fixed text-left text-sm">
                   <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-400">
                     <tr>
                       {[
@@ -207,7 +198,7 @@ export default function Inventaris() {
                         "Jumlah",
                         "Satuan",
                       ].map((heading) => (
-                        <th key={heading} className="px-5 py-4 font-semibold">
+                        <th key={heading} className={`px-5 py-4 font-semibold ${heading === "No" ? "w-16" : heading === "Foto" ? "w-24" : heading === "Nama Barang" ? "w-64" : heading === "Keterangan" ? "w-[360px]" : heading === "Jumlah" ? "w-24" : "w-32"}`}>
                           {heading}
                         </th>
                       ))}
@@ -251,10 +242,10 @@ export default function Inventaris() {
                           )}
                         </td>
                         <td className="px-5 py-4 font-semibold text-slate-700">
-                          {item.nama_barang}
+                          <span className="[overflow-wrap:anywhere]">{item.nama_barang}</span>
                         </td>
                         <td className="max-w-md px-5 py-4 text-slate-500">
-                          {item.keterangan || "-"}
+                          <p className="[overflow-wrap:anywhere]">{item.keterangan || "-"}</p>
                         </td>
                         <td
                           className={`px-5 py-4 text-base font-bold ${item.jumlah > 0 ? "text-emerald-600" : "text-red-500"}`}
@@ -262,7 +253,7 @@ export default function Inventaris() {
                           {item.jumlah}
                         </td>
                         <td className="px-5 py-4">
-                          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          <span className="flex w-full max-w-40 justify-center rounded-xl bg-emerald-50 px-3 py-1 text-center text-xs font-semibold text-emerald-700 [overflow-wrap:anywhere]">
                             {item.satuan}
                           </span>
                         </td>
