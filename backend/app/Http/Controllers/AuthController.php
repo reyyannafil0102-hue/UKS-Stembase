@@ -6,10 +6,70 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    public function sendPasswordResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        if (!in_array($status, [
+            Password::RESET_LINK_SENT,
+            Password::INVALID_USER,
+            Password::RESET_THROTTLED,
+        ], true)) {
+            return response()->json([
+                'message' => 'Email reset password belum dapat dikirim. Silakan coba lagi.',
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Jika email terdaftar, tautan untuk mengatur ulang password akan dikirim.',
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $validated,
+            function ($user, string $password) {
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                $user->tokens()->delete();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status !== Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => 'Tautan reset tidak valid atau sudah kedaluwarsa. Silakan minta tautan baru.',
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Password berhasil diatur ulang. Silakan login dengan password baru.',
+        ]);
+    }
+
     // ==========================
     // REGISTER
     // ==========================
@@ -90,24 +150,32 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'kelas' => 'nullable|string|max:50',
+            'nisn' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string|max:1000',
         ]);
 
         // Simpan email lama
         $emailLama = $user->email;
 
         // Email baru
-        $emailBaru = $request->email;
+        $emailBaru = $validated['email'];
 
         // Cek apakah email berubah
         $emailBerubah = $emailLama !== $emailBaru;
 
         // Update data dasar
-        $user->name = $request->name;
-        $user->kelas = $request->kelas;
+        $user->name = $validated['name'];
+        $user->kelas = $validated['kelas'] ?? null;
+        if (array_key_exists('nisn', $validated)) {
+            $user->nisn = $validated['nisn'];
+        }
+        if (array_key_exists('alamat', $validated)) {
+            $user->alamat = $validated['alamat'];
+        }
 
         if ($emailBerubah) {
 
@@ -136,42 +204,59 @@ class AuthController extends Controller
         ]);
     }
 
-
-    // ==========================
-    // UPLOAD / GANTI FOTO
-    // ==========================
-
-    public function uploadFoto(Request $request)
+    public function updatePassword(Request $request)
     {
-        $request->validate([
-            'foto' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = $request->user();
 
-        // Hapus foto lama jika ada
-        if ($user->foto) {
-
-            $oldPath = storage_path(
-                'app/public/' . $user->foto
-            );
-
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-            }
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'message' => 'Password lama tidak sesuai.',
+                'errors' => [
+                    'current_password' => ['Password lama tidak sesuai.'],
+                ],
+            ], 422);
         }
 
-        // Simpan foto baru
-        $path = $request->file('foto')
-            ->store('foto-user', 'public');
+        $user->password = $validated['password'];
+        $user->save();
 
-        // Simpan path ke database
+        return response()->json([
+            'message' => 'Password berhasil diganti.',
+        ]);
+    }
+
+
+    // ==========================
+    // GANTI FOTO PROFIL DENGAN URL
+    // ==========================
+
+    public function uploadFoto(Request $request)
+    {
+        $request->merge([
+            'foto' => is_string($request->input('foto')) ? trim($request->input('foto')) : $request->input('foto'),
+        ]);
+
+        $request->validate([
+            'foto' => 'required|url:http,https|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        if ($user->foto && !preg_match('/^https?:\/\//i', $user->foto)) {
+            Storage::disk('public')->delete($user->foto);
+        }
+
         $user->update([
-            'foto' => $path,
+            'foto' => $request->input('foto'),
         ]);
 
         return response()->json([
-            'message' => 'Foto profil berhasil diupload',
+            'message' => 'URL foto profil berhasil diperbarui',
             'user' => $user->fresh()->load('role'),
         ]);
     }
@@ -186,13 +271,8 @@ class AuthController extends Controller
         $user = $request->user();
 
         if ($user->foto) {
-
-            $path = storage_path(
-                'app/public/' . $user->foto
-            );
-
-            if (file_exists($path)) {
-                unlink($path);
+            if (!preg_match('/^https?:\/\//i', $user->foto)) {
+                Storage::disk('public')->delete($user->foto);
             }
 
             $user->update([

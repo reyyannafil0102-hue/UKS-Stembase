@@ -22,6 +22,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
     'password',
     'kelas',
     'foto',
+    'nisn',
+    'alamat',
 ])]
 
 #[Hidden([

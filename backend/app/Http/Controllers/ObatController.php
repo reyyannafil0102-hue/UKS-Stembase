@@ -40,9 +40,13 @@ class ObatController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'foto' => is_string($request->input('foto')) ? trim($request->input('foto')) : $request->input('foto'),
+        ]);
+
         $request->validate([
             'nama_obat' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto' => 'nullable|url:http,https|max:2048',
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
@@ -50,14 +54,11 @@ class ObatController extends Controller
 
         $data = [
             'nama_obat' => $request->nama_obat,
+            'foto' => $request->input('foto'),
             'kegunaan' => $request->kegunaan,
             'stok' => $request->stok,
             'satuan' => $request->satuan,
         ];
-
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('foto-obat', 'public');
-        }
 
         $obat = Obat::create($data);
 
@@ -76,9 +77,13 @@ class ObatController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'foto' => is_string($request->input('foto')) ? trim($request->input('foto')) : $request->input('foto'),
+        ]);
+
         $request->validate([
             'nama_obat' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto' => 'nullable|url:http,https|max:2048',
             'kegunaan' => 'required|string',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
@@ -93,11 +98,11 @@ class ObatController extends Controller
             'satuan' => $request->satuan,
         ];
 
-        if ($request->hasFile('foto')) {
-            if ($obat->foto) {
+        if ($request->exists('foto')) {
+            if ($obat->foto && !preg_match('/^https?:\/\//i', $obat->foto)) {
                 Storage::disk('public')->delete($obat->foto);
             }
-            $data['foto'] = $request->file('foto')->store('foto-obat', 'public');
+            $data['foto'] = $request->input('foto');
         }
 
         $obat->update($data);
@@ -119,7 +124,7 @@ class ObatController extends Controller
 
         $obat = Obat::findOrFail($id);
 
-        if ($obat->foto) {
+        if ($obat->foto && !preg_match('/^https?:\/\//i', $obat->foto)) {
             Storage::disk('public')->delete($obat->foto);
         }
 

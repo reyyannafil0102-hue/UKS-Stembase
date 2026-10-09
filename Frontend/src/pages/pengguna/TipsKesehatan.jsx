@@ -4,6 +4,7 @@ import {
   Bell,
   CalendarDays,
   ClipboardCheck,
+  Home,
   HeartPulse,
   Home as HomeIcon,
   Lightbulb,
@@ -11,10 +12,10 @@ import {
   PackageSearch,
   Pill,
   User,
-  X,
 } from "lucide-react";
 import api from "../../services/api";
 import MobileMenu from "../../components/MobileMenu";
+import ImageLightbox from "../../components/ImageLightbox";
 
 const menuItems = [
   { label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
@@ -33,6 +34,13 @@ const getTipImageUrl = (gambar) => {
   return `${storageUrl}/${gambar.replace(/^\/+/, "")}`;
 };
 
+const tipArtworks = [
+  { emoji: "🥪", background: "bg-emerald-100" },
+  { emoji: "💧", background: "bg-sky-100" },
+  { emoji: "😴", background: "bg-amber-100" },
+  { emoji: "☀️", background: "bg-rose-100" },
+];
+
 export default function TipsKesehatan() {
   const navigate = useNavigate();
   const [user] = useState(() => {
@@ -46,6 +54,7 @@ export default function TipsKesehatan() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTip, setSelectedTip] = useState(null);
+  const [showPoster, setShowPoster] = useState(false);
 
   useEffect(() => {
     const loadTips = async () => {
@@ -73,6 +82,16 @@ export default function TipsKesehatan() {
     localStorage.removeItem("user");
     navigate("/login");
   };
+  const selectedIndex = selectedTip
+    ? tips.findIndex((tip) => tip.id === selectedTip.id)
+    : -1;
+  const selectedArtwork =
+    tipArtworks[(Math.max(selectedIndex, 0)) % tipArtworks.length];
+  const detail = selectedTip?.detail || {};
+  const detailBenefits = (detail.benefits || []).filter(
+    (benefit) => benefit.title?.trim() || benefit.description?.trim(),
+  );
+  const detailSteps = (detail.steps || []).filter((step) => step?.trim());
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -119,27 +138,43 @@ export default function TipsKesehatan() {
       </aside>
       <MobileMenu currentPath="/tips-kesehatan" onLogout={handleLogout} />
 
-      <main className="min-h-screen lg:ml-64">
-        <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10">
+      <main className="min-h-screen bg-[#f3f8f5] lg:ml-64">
+        <header className="flex h-16 items-center justify-between border-b border-emerald-100 bg-[#f8fbf9] px-5 sm:px-8 lg:px-10">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-800">
-              Tips Kesehatan
+            <h2 className="text-xl font-extrabold text-slate-800">
+              {selectedTip?.judul || "Kiat Kesehatan"}
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
-              Dashboard &gt; Tips Kesehatan
+            <p className="mt-1 flex items-center gap-1 text-[11px] text-slate-400">
+              <Home size={11} />
+              Beranda <span className="text-emerald-500">›</span>{" "}
+              <button
+                type="button"
+                onClick={() => setSelectedTip(null)}
+                className="hover:text-emerald-700"
+              >
+                Kiat Kesehatan
+              </button>
+              {selectedTip && (
+                <>
+                  <span className="text-emerald-500">›</span>
+                  <span className="max-w-40 truncate text-slate-500">
+                    {selectedTip.judul}
+                  </span>
+                </>
+              )}
             </p>
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               aria-label="Notifikasi"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"
+              className="relative flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 transition hover:bg-emerald-100"
             >
-              <Bell size={21} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
+              <Bell size={16} />
+              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-amber-400" />
             </button>
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-emerald-600 text-sm font-bold text-white">
                 {user?.foto ? (
                   <img
                     src={user.foto}
@@ -147,97 +182,235 @@ export default function TipsKesehatan() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <User size={21} className="text-emerald-600" />
+                  (user?.name || "A").charAt(0).toUpperCase()
                 )}
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm font-bold text-slate-700">
-                  Hai, {user?.name || "Pengguna"}
+                <p className="text-xs font-bold text-slate-700">
+                  {user?.name || "Pengguna"}
                 </p>
-                <p className="mt-0.5 text-xs text-slate-400">Siswa</p>
+                <p className="text-[10px] text-slate-400">Siswa</p>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="px-6 py-7 sm:px-8 lg:px-10 xl:px-12">
+        <div className="px-5 py-5 sm:px-8 lg:px-10">
+          {selectedTip ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setSelectedTip(null)}
+                className="mb-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+              >
+                ← Kembali ke kiat kesehatan
+              </button>
+              <article className="w-full overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm">
+                <section className="grid sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+                  <div
+                    className={`flex h-52 items-center justify-center sm:h-64 ${selectedArtwork.background}`}
+                  >
+                    {selectedTip.gambar ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowPoster(true)}
+                        aria-label={`Lihat poster ${selectedTip.judul}`}
+                        title="Tekan untuk melihat poster"
+                        className="group relative h-36 w-36 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg transition hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 sm:h-44 sm:w-44"
+                      >
+                        <img
+                          src={getTipImageUrl(selectedTip.gambar)}
+                          alt={selectedTip.judul || "Thumbnail poster kiat"}
+                          className="h-full w-full object-cover"
+                        />
+                        <span className="absolute inset-0 flex items-center justify-center bg-slate-950/0 text-xs font-semibold text-white opacity-0 transition group-hover:bg-slate-950/35 group-hover:opacity-100">
+                          Lihat poster
+                        </span>
+                      </button>
+                    ) : (
+                      <span aria-hidden="true" className="flex h-36 w-36 items-center justify-center rounded-full border-4 border-white bg-white text-7xl shadow-lg sm:h-44 sm:w-44">
+                        {selectedArtwork.emoji}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-center p-5 sm:p-7">
+                    <span className="w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-emerald-700">
+                      ♥ Kiat Kesehatan
+                    </span>
+                    <h1 className="mt-3 text-xl font-extrabold text-slate-800 sm:text-2xl">
+                      {selectedTip.judul || "Kiat Kesehatan"}
+                    </h1>
+                    <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-slate-500">
+                      {selectedTip.isi}
+                    </p>
+                  </div>
+                </section>
+
+                <div className="space-y-5 p-5 sm:p-7 lg:p-8">
+                  {(detail.section_title?.trim() || detail.section_body?.trim()) && (
+                    <section>
+                      <h2 className="text-sm font-bold text-slate-800">
+                        {detail.section_title || "Mengapa Ini Penting?"}
+                      </h2>
+                      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600">
+                        {detail.section_body}
+                      </p>
+                    </section>
+                  )}
+
+                  {detailBenefits.length > 0 && (
+                    <section>
+                      <h2 className="mb-2 text-sm font-bold text-slate-800">
+                        Manfaat
+                      </h2>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {detailBenefits.map((benefit, index) => (
+                          <article
+                            key={`${benefit.title}-${index}`}
+                            className="rounded-lg border border-emerald-100 bg-[#f3f8f5] p-3"
+                          >
+                            <span aria-hidden="true" className="text-base">
+                              {benefit.icon || "💚"}
+                            </span>
+                            {benefit.title && (
+                              <h3 className="mt-1 text-xs font-bold text-slate-800">
+                                {benefit.title}
+                              </h3>
+                            )}
+                            {benefit.description && (
+                              <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                                {benefit.description}
+                              </p>
+                            )}
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                  {detailSteps.length > 0 && (
+                    <section>
+                      <h2 className="mb-2 text-sm font-bold text-slate-800">
+                        Langkah-Langkah
+                      </h2>
+                      <ol className="space-y-2 text-sm leading-relaxed text-slate-600">
+                        {detailSteps.map((step, index) => (
+                          <li
+                            key={`${step}-${index}`}
+                            className="flex items-start gap-2"
+                          >
+                            <span className="font-semibold text-emerald-700">
+                              {index + 1}.
+                            </span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </section>
+                  )}
+
+                  {detail.reminder && (
+                    <aside className="rounded-lg bg-emerald-50 px-3 py-2.5 text-[11px] leading-relaxed text-emerald-800">
+                      <span className="font-bold">♥ Ingat!</span>{" "}
+                      {detail.reminder}
+                    </aside>
+                  )}
+                </div>
+              </article>
+            </>
+          ) : (
+            <>
+          <section className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
+            <h3 className="text-sm font-bold text-emerald-800">
+              💚 Kiat Sehat untuk Siswa
+            </h3>
+            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+              Kebiasaan sederhana sehari-hari dapat membantu menjaga tubuh tetap
+              sehat dan siap mengikuti kegiatan di sekolah.
+            </p>
+          </section>
+
           {error && (
-            <div className="mt-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="mt-4 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
             </div>
           )}
+
           {loading ? (
-            <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-sm text-slate-400 shadow-sm">
-              Memuat tips kesehatan...
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-white p-8 text-center text-sm text-slate-400">
+              Memuat kiat kesehatan...
             </div>
           ) : tips.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-center text-sm text-slate-400 shadow-sm">
-              Belum ada tips kesehatan.
+            <div className="mt-4 rounded-xl border border-emerald-100 bg-white p-8 text-center text-sm text-slate-400">
+              Belum ada kiat kesehatan.
             </div>
           ) : (
-            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {tips.map((tip) => (
-                <button
-                  key={tip.id}
-                  type="button"
-                  onClick={() => tip.gambar && setSelectedTip(tip)}
-                  disabled={!tip.gambar}
-                  className="group w-full max-w-65 overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg disabled:cursor-default disabled:hover:translate-y-0 disabled:hover:shadow-sm"
-                >
-                  {tip.gambar ? (
-                    <img
-                      src={getTipImageUrl(tip.gambar)}
-                      alt={tip.judul || "Poster tips kesehatan"}
-                      className="aspect-3/4 w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-                    />
-                  ) : (
-                    <div className="flex aspect-3/4 items-center justify-center bg-slate-50">
-                      <Lightbulb size={48} className="text-slate-300" />
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {tips.map((tip, index) => {
+                const artwork = tipArtworks[index % tipArtworks.length];
+
+                return (
+                  <button
+                    key={tip.id}
+                    type="button"
+                    onClick={() => setSelectedTip(tip)}
+                    className="group overflow-hidden rounded-xl border border-emerald-100 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div
+                      className={`flex h-28 items-center justify-center overflow-hidden ${artwork.background}`}
+                    >
+                      {tip.gambar ? (
+                        <img
+                          src={getTipImageUrl(tip.gambar)}
+                          alt=""
+                          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="text-5xl drop-shadow-sm transition duration-300 group-hover:scale-110"
+                        >
+                          {artwork.emoji}
+                        </span>
+                      )}
                     </div>
-                  )}
-                  <div className="border-t border-slate-100 px-4 py-3">
-                    <p className="truncate text-sm font-semibold text-slate-700">
-                      {tip.judul || "Poster Tips Kesehatan"}
-                    </p>
-                    <p className="mt-1 line-clamp-3 text-xs leading-5 text-slate-400">
-                      {tip.isi}
-                    </p>
-                  </div>
-                </button>
-              ))}
+                    <div className="px-3 py-2.5">
+                      <p className="text-[9px] font-extrabold uppercase tracking-wide text-emerald-600">
+                        Kiat {String(index + 1).padStart(2, "0")}
+                      </p>
+                      <h3 className="mt-1 line-clamp-1 text-xs font-bold text-slate-800">
+                        {tip.judul || "Kiat Kesehatan"}
+                      </h3>
+                      <p className="mt-1 line-clamp-3 min-h-10 text-[10px] leading-relaxed text-slate-500">
+                        {tip.isi}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
+          )}
+
+          <aside className="mt-3 flex items-start gap-2 rounded-xl border border-emerald-100 bg-white px-3 py-2.5 text-[10px] leading-relaxed text-slate-500">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-50">
+              💡
+            </span>
+            <p>
+              <span className="font-bold text-emerald-700">Ingat!</span> Kalau
+              tubuh terasa kurang sehat, jangan memaksakan diri. Segera
+              beristirahat dan laporkan kepada guru atau petugas UKS.
+            </p>
+          </aside>
+            </>
           )}
         </div>
       </main>
-      {selectedTip?.gambar && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 sm:p-8"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Preview poster tips kesehatan"
-          onClick={() => setSelectedTip(null)}
-        >
-          <div
-            className="relative flex max-h-full max-w-4xl flex-col items-center gap-4"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <img
-              src={getTipImageUrl(selectedTip.gambar)}
-              alt={selectedTip.judul || "Poster tips kesehatan"}
-              className="max-h-[calc(100vh-8rem)] max-w-full rounded-xl object-contain shadow-2xl"
-            />
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                aria-label="Tutup preview poster"
-                onClick={() => setSelectedTip(null)}
-                className="rounded-lg bg-white/10 p-2.5 text-white transition hover:bg-white/20"
-              >
-                <X size={20} />
-              </button>
-            </div>
-          </div>
-        </div>
+      {showPoster && selectedTip?.gambar && (
+        <ImageLightbox
+          src={getTipImageUrl(selectedTip.gambar)}
+          alt={selectedTip.judul || "Poster kiat kesehatan"}
+          onClose={() => setShowPoster(false)}
+        />
       )}
     </div>
   );

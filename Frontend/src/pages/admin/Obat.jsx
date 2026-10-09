@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import api from "../../services/api";
+import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
   ["Dashboard", "/admin", HomeIcon],
@@ -31,12 +32,17 @@ const menuItems = [
   ["Profil Saya", "/admin/profil", User],
 ];
 const storageUrl = "http://127.0.0.1:8000/storage";
+const getImageUrl = (foto) => {
+  if (!foto) return "";
+  if (/^https?:\/\//i.test(foto)) return foto;
+  return `${storageUrl}/${foto.replace(/^\/+/, "")}`;
+};
 const emptyForm = {
   nama_obat: "",
   kegunaan: "",
   stok: "",
   satuan: "",
-  foto: null,
+  foto: "",
 };
 
 export default function Obat() {
@@ -111,9 +117,9 @@ export default function Obat() {
       kegunaan: obat.kegunaan,
       stok: obat.stok,
       satuan: obat.satuan,
-      foto: null,
+      foto: /^https?:\/\//i.test(obat.foto || "") ? obat.foto : "",
     });
-    setPreviewImage(obat.foto ? `${storageUrl}/${obat.foto}` : null);
+    setPreviewImage(obat.foto ? getImageUrl(obat.foto) : null);
     setFormError("");
     setShowForm(true);
   };
@@ -125,39 +131,23 @@ export default function Obat() {
     setShowForm(false);
   };
   const updateForm = (event) => {
-    const { name, value, files } = event.target;
-
-    if (name === "foto" && files && files[0]) {
-      const file = files[0];
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewImage(objectUrl);
-      setForm((current) => ({ ...current, [name]: file }));
-      return;
-    }
-
+    const { name, value } = event.target;
     if (name === "foto") {
-      setPreviewImage(editing?.foto ? `${storageUrl}/${editing.foto}` : null);
+      setPreviewImage(value.trim() ? value.trim() : editing?.foto ? getImageUrl(editing.foto) : null);
     }
-
-    setForm((current) => ({ ...current, [name]: files ? files[0] : value }));
+    setForm((current) => ({ ...current, [name]: value }));
   };
 
   const saveObat = async (event) => {
     event.preventDefault();
     setSaving(true);
     setFormError("");
-    const payload = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value !== null && value !== "") payload.append(key, value);
-    });
+    const payload = { ...form };
+    if (!payload.foto) delete payload.foto;
     try {
       const response = editing
-        ? await api.post(`/admin/obat/${editing.id}?_method=PUT`, payload, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-        : await api.post("/admin/obat", payload, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+        ? await api.put(`/admin/obat/${editing.id}`, payload)
+        : await api.post("/admin/obat", payload);
       setObats((current) =>
         editing
           ? current.map((obat) =>
@@ -368,8 +358,8 @@ export default function Obat() {
                         </td>
                         <td className="px-6 py-4">
                           {obat.foto ? (
-                            <img
-                              src={`${storageUrl}/${obat.foto}`}
+                            <ZoomableImage
+                              src={getImageUrl(obat.foto)}
                               alt={obat.nama_obat}
                               className="h-11 w-11 rounded-lg object-cover"
                             />
@@ -486,11 +476,16 @@ export default function Obat() {
                 Foto
                 <input
                   name="foto"
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
+                  type="url"
+                  maxLength={2048}
+                  value={form.foto}
                   onChange={updateForm}
-                  className="mt-2 block w-full rounded-lg border border-slate-200 p-2 text-sm font-normal text-slate-500"
+                  placeholder="https://... (Direct link ImgBB)"
+                  className="mt-2 block h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal text-slate-700 outline-none focus:border-emerald-500"
                 />
+                <span className="mt-1 block text-xs font-normal text-slate-400">
+                  Tempel direct link gambar dari ImgBB atau layanan sejenis.
+                </span>
                 {previewImage && (
                   <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-2">
                     <img

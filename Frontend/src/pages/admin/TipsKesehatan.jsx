@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import api from "../../services/api";
+import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
   ["Dashboard", "/admin", HomeIcon],
@@ -31,7 +32,23 @@ const menuItems = [
   ["Profil Saya", "/admin/profil", User],
 ];
 const storageUrl = "http://127.0.0.1:8000/storage";
-const emptyForm = { judul: "", isi: "", gambar: null };
+const getImageUrl = (gambar) => {
+  if (!gambar) return "";
+  if (/^https?:\/\//i.test(gambar)) return gambar;
+  return `${storageUrl}/${gambar.replace(/^\/+/, "")}`;
+};
+const emptyForm = {
+  judul: "",
+  isi: "",
+  gambar: "",
+  detail: {
+    section_title: "",
+    section_body: "",
+    benefits: [{ icon: "💚", title: "", description: "" }],
+    steps: [""],
+    reminder: "",
+  },
+};
 
 export default function TipsKesehatan() {
   const navigate = useNavigate();
@@ -94,14 +111,21 @@ export default function TipsKesehatan() {
   };
   const openEdit = (tip) => {
     setEditing(tip);
-    setForm({ judul: tip.judul || "", isi: tip.isi || "", gambar: null });
-    setPreviewImage(
-      tip.gambar
-        ? tip.gambar.startsWith("http")
-          ? tip.gambar
-          : `${storageUrl}/${tip.gambar}`
-        : null,
-    );
+    setForm({
+      judul: tip.judul || "",
+      isi: tip.isi || "",
+      gambar: /^https?:\/\//i.test(tip.gambar || "") ? tip.gambar : "",
+      detail: {
+        section_title: tip.detail?.section_title || "",
+        section_body: tip.detail?.section_body || "",
+        benefits: tip.detail?.benefits?.length
+          ? tip.detail.benefits
+          : [{ icon: "💚", title: "", description: "" }],
+        steps: tip.detail?.steps?.length ? tip.detail.steps : [""],
+        reminder: tip.detail?.reminder || "",
+      },
+    });
+    setPreviewImage(tip.gambar ? getImageUrl(tip.gambar) : null);
     setFormError("");
     setShowForm(true);
   };
@@ -113,27 +137,96 @@ export default function TipsKesehatan() {
     setShowForm(false);
   };
   const updateForm = (event) => {
-    const { name, value, files } = event.target;
-    if (name === "gambar" && files?.[0])
-      setPreviewImage(URL.createObjectURL(files[0]));
-    setForm((current) => ({ ...current, [name]: files ? files[0] : value }));
+    const { name, value } = event.target;
+    if (name === "gambar") {
+      setPreviewImage(value.trim() ? value.trim() : editing?.gambar ? getImageUrl(editing.gambar) : null);
+    }
+    setForm((current) => ({ ...current, [name]: value }));
+  };
+  const updateDetail = (field, value) => {
+    setForm((current) => ({
+      ...current,
+      detail: { ...current.detail, [field]: value },
+    }));
+  };
+  const updateBenefit = (index, field, value) => {
+    setForm((current) => ({
+      ...current,
+      detail: {
+        ...current.detail,
+        benefits: current.detail.benefits.map((benefit, benefitIndex) =>
+          benefitIndex === index ? { ...benefit, [field]: value } : benefit,
+        ),
+      },
+    }));
+  };
+  const addBenefit = () => {
+    setForm((current) => ({
+      ...current,
+      detail: {
+        ...current.detail,
+        benefits: [
+          ...current.detail.benefits,
+          { icon: "💚", title: "", description: "" },
+        ],
+      },
+    }));
+  };
+  const removeBenefit = (index) => {
+    setForm((current) => ({
+      ...current,
+      detail: {
+        ...current.detail,
+        benefits: current.detail.benefits.filter(
+          (_, benefitIndex) => benefitIndex !== index,
+        ),
+      },
+    }));
+  };
+  const updateStep = (index, value) => {
+    setForm((current) => ({
+      ...current,
+      detail: {
+        ...current.detail,
+        steps: current.detail.steps.map((step, stepIndex) =>
+          stepIndex === index ? value : step,
+        ),
+      },
+    }));
+  };
+  const addStep = () => {
+    setForm((current) => ({
+      ...current,
+      detail: { ...current.detail, steps: [...current.detail.steps, ""] },
+    }));
+  };
+  const removeStep = (index) => {
+    setForm((current) => ({
+      ...current,
+      detail: {
+        ...current.detail,
+        steps: current.detail.steps.filter((_, stepIndex) => stepIndex !== index),
+      },
+    }));
   };
   const saveTip = async (event) => {
     event.preventDefault();
     setSaving(true);
     setFormError("");
-    const payload = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value !== null && value !== "") payload.append(key, value);
-    });
+    const payload = { ...form };
+    if (!payload.gambar) delete payload.gambar;
+    payload.detail = {
+      ...payload.detail,
+      benefits: payload.detail.benefits.filter(
+        (benefit) =>
+          benefit.title.trim() || benefit.description.trim(),
+      ),
+      steps: payload.detail.steps.map((step) => step.trim()).filter(Boolean),
+    };
     try {
       const response = editing
-        ? await api.post(`/admin/tips/${editing.id}?_method=PUT`, payload, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-        : await api.post("/admin/tips", payload, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+        ? await api.put(`/admin/tips/${editing.id}`, payload)
+        : await api.post("/admin/tips", payload);
       setTips((current) =>
         editing
           ? current.map((tip) =>
@@ -320,8 +413,8 @@ export default function TipsKesehatan() {
                         </td>
                         <td className="px-6 py-4">
                           {tip.gambar ? (
-                            <img
-                              src={tip.gambar.startsWith("http") ? tip.gambar : `${storageUrl}/${tip.gambar}`}
+                            <ZoomableImage
+                              src={getImageUrl(tip.gambar)}
                               alt={tip.judul}
                               className="h-11 w-16 rounded-lg object-cover"
                             />
@@ -430,11 +523,16 @@ export default function TipsKesehatan() {
               Gambar
               <input
                 name="gambar"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
+                type="url"
+                maxLength={2048}
+                value={form.gambar}
                 onChange={updateForm}
-                className="mt-2 block w-full rounded-lg border border-slate-200 p-2 text-sm font-normal text-slate-500"
+                placeholder="https://... (Direct link ImgBB)"
+                className="mt-2 block h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal text-slate-700 outline-none focus:border-emerald-500"
               />
+              <span className="mt-1 block text-xs font-normal text-slate-400">
+                Tempel direct link gambar dari ImgBB atau layanan sejenis.
+              </span>
               {previewImage && (
                 <img
                   src={previewImage}
@@ -443,6 +541,166 @@ export default function TipsKesehatan() {
                 />
               )}
             </label>
+            <section className="mt-6 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
+              <div>
+                <h4 className="text-sm font-bold text-slate-800">
+                  Template halaman detail
+                </h4>
+                <p className="mt-1 text-xs font-normal text-slate-500">
+                  Konten ini akan muncul saat siswa menekan kartu kiat.
+                </p>
+              </div>
+              <label className="mt-4 block text-sm font-semibold text-slate-700">
+                Judul bagian penjelasan
+                <input
+                  value={form.detail.section_title}
+                  onChange={(event) =>
+                    updateDetail("section_title", event.target.value)
+                  }
+                  maxLength={255}
+                  placeholder="Contoh: Mengapa Sarapan Itu Penting?"
+                  className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal outline-none focus:border-emerald-500"
+                />
+              </label>
+              <label className="mt-3 block text-sm font-semibold text-slate-700">
+                Penjelasan
+                <textarea
+                  value={form.detail.section_body}
+                  onChange={(event) =>
+                    updateDetail("section_body", event.target.value)
+                  }
+                  rows={3}
+                  maxLength={10000}
+                  placeholder="Jelaskan topik kiat kesehatan ini."
+                  className="mt-2 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-emerald-500"
+                />
+              </label>
+
+              <div className="mt-5 flex items-center justify-between gap-2">
+                <h5 className="text-sm font-bold text-slate-700">
+                  Kartu manfaat
+                </h5>
+                <button
+                  type="button"
+                  onClick={addBenefit}
+                  disabled={form.detail.benefits.length >= 6}
+                  className="rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 disabled:opacity-50"
+                >
+                  + Tambah manfaat
+                </button>
+              </div>
+              <div className="mt-3 space-y-3">
+                {form.detail.benefits.map((benefit, index) => (
+                  <div
+                    key={`benefit-${index}`}
+                    className="rounded-lg border border-slate-200 bg-white p-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-500">
+                        Manfaat {index + 1}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeBenefit(index)}
+                        className="text-xs font-semibold text-red-500"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                    <div className="mt-2 grid gap-2 sm:grid-cols-[5rem_1fr]">
+                      <label className="text-xs font-medium text-slate-600">
+                        Ikon
+                        <input
+                          value={benefit.icon}
+                          onChange={(event) =>
+                            updateBenefit(index, "icon", event.target.value)
+                          }
+                          maxLength={20}
+                          placeholder="💚"
+                          className="mt-1 h-9 w-full rounded-lg border border-slate-200 px-2 text-sm outline-none focus:border-emerald-500"
+                        />
+                      </label>
+                      <label className="text-xs font-medium text-slate-600">
+                        Judul manfaat
+                        <input
+                          value={benefit.title}
+                          onChange={(event) =>
+                            updateBenefit(index, "title", event.target.value)
+                          }
+                          maxLength={100}
+                          placeholder="Contoh: Menambah energi"
+                          className="mt-1 h-9 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-emerald-500"
+                        />
+                      </label>
+                    </div>
+                    <label className="mt-2 block text-xs font-medium text-slate-600">
+                      Penjelasan manfaat
+                      <textarea
+                        value={benefit.description}
+                        onChange={(event) =>
+                          updateBenefit(index, "description", event.target.value)
+                        }
+                        rows={2}
+                        maxLength={1000}
+                        placeholder="Jelaskan manfaatnya."
+                        className="mt-1 w-full resize-y rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal outline-none focus:border-emerald-500"
+                      />
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 flex items-center justify-between gap-2">
+                <h5 className="text-sm font-bold text-slate-700">
+                  Langkah atau saran
+                </h5>
+                <button
+                  type="button"
+                  onClick={addStep}
+                  disabled={form.detail.steps.length >= 10}
+                  className="rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 disabled:opacity-50"
+                >
+                  + Tambah langkah
+                </button>
+              </div>
+              <div className="mt-3 space-y-2">
+                {form.detail.steps.map((step, index) => (
+                  <div
+                    key={`step-${index}`}
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      value={step}
+                      onChange={(event) => updateStep(index, event.target.value)}
+                      maxLength={500}
+                      placeholder={`Langkah ${index + 1}`}
+                      className="h-10 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeStep(index)}
+                      className="rounded-lg px-2 py-2 text-xs font-semibold text-red-500"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <label className="mt-5 block text-sm font-semibold text-slate-700">
+                Catatan pengingat
+                <textarea
+                  value={form.detail.reminder}
+                  onChange={(event) =>
+                    updateDetail("reminder", event.target.value)
+                  }
+                  rows={2}
+                  maxLength={1000}
+                  placeholder="Contoh: Jika merasa tidak enak badan, segera lapor petugas UKS."
+                  className="mt-2 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-emerald-500"
+                />
+              </label>
+            </section>
             <div className="mt-6 flex justify-end gap-3">
               <button
                 type="button"

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetLink'])->middleware('throttle:6,1');
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/email/verification-notification-public', [AuthController::class, 'resendVerificationPublic']);
 
 
@@ -202,6 +204,11 @@ Route::middleware('auth:sanctum')->group(function () {
     );
 
     Route::get(
+        '/admin/roles',
+        [UserController::class, 'roles']
+    );
+
+    Route::get(
         '/admin/users/{id}',
         [UserController::class, 'show']
     );
@@ -217,6 +224,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put(
         '/user/profile',
         [AuthController::class, 'updateProfile']
+    );
+
+    Route::put(
+        '/user/password',
+        [AuthController::class, 'updatePassword']
     );
 
     Route::post(

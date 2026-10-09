@@ -12,10 +12,10 @@ import {
   Pill,
   Search,
   User,
-  X,
 } from "lucide-react";
 import api from "../../services/api";
 import MobileMenu from "../../components/MobileMenu";
+import ImageLightbox from "../../components/ImageLightbox";
 
 const menuItems = [
   { label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
@@ -282,33 +282,11 @@ export default function Inventaris() {
         </div>
       </main>
       {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-5"
-          role="presentation"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="relative max-h-[90vh] max-w-[90vw] rounded-xl bg-white p-3 shadow-2xl"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Foto ${selectedImage.alt}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="Tutup foto"
-              onClick={() => setSelectedImage(null)}
-              className="absolute right-2 top-2 z-10 rounded-full bg-slate-900/70 p-2 text-white hover:bg-slate-900"
-            >
-              <X size={18} />
-            </button>
-            <img
-              src={selectedImage.src}
-              alt={selectedImage.alt}
-              className="max-h-[84vh] max-w-[85vw] object-contain"
-            />
-          </div>
-        </div>
+        <ImageLightbox
+          src={selectedImage.src}
+          alt={selectedImage.alt}
+          onClose={() => setSelectedImage(null)}
+        />
       )}
     </div>
   );

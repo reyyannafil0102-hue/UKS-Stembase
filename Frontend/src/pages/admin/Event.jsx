@@ -20,6 +20,7 @@ import {
 	X,
 } from "lucide-react";
 import api from "../../services/api";
+import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
 	["Dashboard", "/admin", HomeIcon],
@@ -260,7 +261,7 @@ export default function Event() {
 										{filteredEvents.map((event, index) => (
 											<tr key={event.id} className="hover:bg-slate-50">
 												<td className="px-6 py-4 text-slate-400">{index + 1}</td>
-												<td className="px-6 py-4"><div className="flex items-center gap-3">{event.gambar ? <img src={event.gambar} alt={event.judul} className="h-12 w-16 rounded-lg object-cover" /> : <div className="flex h-12 w-16 items-center justify-center rounded-lg bg-emerald-50"><CalendarDays size={20} className="text-emerald-600" /></div>}<span className="font-semibold text-slate-700">{event.judul}</span></div></td>
+												<td className="px-6 py-4"><div className="flex items-center gap-3">{event.gambar ? <ZoomableImage src={event.gambar} alt={event.judul} className="h-12 w-16 rounded-lg object-cover" /> : <div className="flex h-12 w-16 items-center justify-center rounded-lg bg-emerald-50"><CalendarDays size={20} className="text-emerald-600" /></div>}<span className="font-semibold text-slate-700">{event.judul}</span></div></td>
 												<td className="whitespace-nowrap px-6 py-4 text-slate-600">{formatDate(event.tanggal)}</td>
 												<td className="px-6 py-4 text-slate-500"><span className="flex items-center gap-2"><MapPin size={15} className="text-emerald-600" />{event.lokasi}</span></td>
 												<td className="max-w-72 px-6 py-4 text-slate-500">{event.deskripsi}</td>

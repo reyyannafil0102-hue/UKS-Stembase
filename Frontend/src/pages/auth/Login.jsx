@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { login } from "../../services/authService";
 import api from "../../services/api";
 import smknLogo from "../../assets/images/Logo-SMKN-7-Semarang.png";
@@ -8,6 +9,7 @@ import uksLogo from "../../assets/images/logo_uks-removebg-preview.png";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -146,6 +148,12 @@ export default function Login() {
             </p>
           </div>
 
+          {location.state?.message && (
+            <div className="mb-5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {location.state.message}
+            </div>
+          )}
+
           {/* Error */}
           {error && (
             <div className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -237,6 +245,14 @@ export default function Login() {
                   )}
                 </button>
 
+              </div>
+              <div className="mt-2 text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-semibold text-emerald-600 transition hover:text-emerald-700"
+                >
+                  Lupa password?
+                </Link>
               </div>
             </div>
 

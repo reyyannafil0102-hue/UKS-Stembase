@@ -28,16 +28,31 @@ class TipsKesehatanController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'gambar' => is_string($request->input('gambar')) ? trim($request->input('gambar')) : $request->input('gambar'),
+        ]);
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gambar' => 'nullable|url:http,https|max:2048',
+            'detail' => 'nullable|array',
+            'detail.section_title' => 'nullable|string|max:255',
+            'detail.section_body' => 'nullable|string|max:10000',
+            'detail.benefits' => 'nullable|array|max:6',
+            'detail.benefits.*.icon' => 'nullable|string|max:20',
+            'detail.benefits.*.title' => 'required|string|max:100',
+            'detail.benefits.*.description' => 'required|string|max:1000',
+            'detail.steps' => 'nullable|array|max:10',
+            'detail.steps.*' => 'required|string|max:500',
+            'detail.reminder' => 'nullable|string|max:1000',
         ]);
 
         $tip = TipsKesehatan::create([
             'judul' => $request->judul,
             'isi' => $request->isi,
-            'gambar' => $request->hasFile('gambar') ? $request->file('gambar')->store('gambar-tips', 'public') : null,
+            'gambar' => $request->input('gambar'),
+            'detail' => $request->input('detail'),
         ]);
 
         return response()->json([
@@ -55,10 +70,24 @@ class TipsKesehatanController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'gambar' => is_string($request->input('gambar')) ? trim($request->input('gambar')) : $request->input('gambar'),
+        ]);
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gambar' => 'nullable|url:http,https|max:2048',
+            'detail' => 'nullable|array',
+            'detail.section_title' => 'nullable|string|max:255',
+            'detail.section_body' => 'nullable|string|max:10000',
+            'detail.benefits' => 'nullable|array|max:6',
+            'detail.benefits.*.icon' => 'nullable|string|max:20',
+            'detail.benefits.*.title' => 'required|string|max:100',
+            'detail.benefits.*.description' => 'required|string|max:1000',
+            'detail.steps' => 'nullable|array|max:10',
+            'detail.steps.*' => 'required|string|max:500',
+            'detail.reminder' => 'nullable|string|max:1000',
         ]);
 
         $tip = TipsKesehatan::findOrFail($id);
@@ -68,12 +97,15 @@ class TipsKesehatanController extends Controller
             'isi' => $request->isi,
         ];
 
-        if ($request->hasFile('gambar')) {
-            if ($tip->gambar && !str_starts_with($tip->gambar, 'http')) {
+        if ($request->exists('gambar')) {
+            if ($tip->gambar && !preg_match('/^https?:\/\//i', $tip->gambar)) {
                 Storage::disk('public')->delete($tip->gambar);
             }
+            $data['gambar'] = $request->input('gambar');
+        }
 
-            $data['gambar'] = $request->file('gambar')->store('gambar-tips', 'public');
+        if ($request->exists('detail')) {
+            $data['detail'] = $request->input('detail');
         }
 
         $tip->update($data);
@@ -95,7 +127,7 @@ class TipsKesehatanController extends Controller
 
         $tip = TipsKesehatan::findOrFail($id);
 
-        if ($tip->gambar && !str_starts_with($tip->gambar, 'http')) {
+        if ($tip->gambar && !preg_match('/^https?:\/\//i', $tip->gambar)) {
             Storage::disk('public')->delete($tip->gambar);
         }
 

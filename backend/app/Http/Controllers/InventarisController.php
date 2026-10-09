@@ -28,9 +28,13 @@ class InventarisController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'foto' => is_string($request->input('foto')) ? trim($request->input('foto')) : $request->input('foto'),
+        ]);
+
         $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto' => 'nullable|url:http,https|max:2048',
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
@@ -38,7 +42,7 @@ class InventarisController extends Controller
 
         $inventaris = Inventaris::create([
             'nama_barang' => $request->nama_barang,
-			'foto' => $request->hasFile('foto') ? $request->file('foto')->store('foto-inventaris', 'public') : null,
+            'foto' => $request->input('foto'),
             'jumlah' => $request->jumlah,
             'satuan' => $request->satuan,
             'keterangan' => $request->keterangan,
@@ -59,9 +63,13 @@ class InventarisController extends Controller
             ], 403);
         }
 
+        $request->merge([
+            'foto' => is_string($request->input('foto')) ? trim($request->input('foto')) : $request->input('foto'),
+        ]);
+
         $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto' => 'nullable|url:http,https|max:2048',
             'jumlah' => 'required|integer|min:0',
             'satuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
@@ -76,12 +84,11 @@ class InventarisController extends Controller
             'keterangan' => $request->keterangan,
         ];
 
-        if ($request->hasFile('foto')) {
-            if ($inventaris->foto) {
+        if ($request->exists('foto')) {
+            if ($inventaris->foto && !preg_match('/^https?:\/\//i', $inventaris->foto)) {
                 Storage::disk('public')->delete($inventaris->foto);
             }
-
-            $data['foto'] = $request->file('foto')->store('foto-inventaris', 'public');
+            $data['foto'] = $request->input('foto');
         }
 
         $inventaris->update($data);
@@ -103,7 +110,7 @@ class InventarisController extends Controller
 
         $inventaris = Inventaris::findOrFail($id);
 
-        if ($inventaris->foto) {
+        if ($inventaris->foto && !preg_match('/^https?:\/\//i', $inventaris->foto)) {
             Storage::disk('public')->delete($inventaris->foto);
         }
 

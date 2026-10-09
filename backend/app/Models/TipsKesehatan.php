@@ -10,5 +10,13 @@ class TipsKesehatan extends Model
         'judul',
         'isi',
         'gambar',
+        'detail',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'detail' => 'array',
+        ];
+    }
 }

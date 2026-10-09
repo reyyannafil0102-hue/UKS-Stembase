@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 import Home from "../pages/pengguna/Home";
 import AbsensiUKS from "../pages/pengguna/AbsensiUKS";
 import StokObat from "../pages/pengguna/StokObat";
@@ -39,6 +41,16 @@ function AppRoutes() {
         <Route
           path="/register"
           element={<Register />}
+        />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPassword />}
         />
 
         {/* Beranda User */}

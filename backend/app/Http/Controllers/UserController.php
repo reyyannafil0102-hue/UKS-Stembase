@@ -8,6 +8,20 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    // Melihat semua role
+    public function roles(Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            return response()->json([
+                'message' => 'Akses hanya untuk Admin',
+            ], 403);
+        }
+
+        return response()->json([
+            'roles' => Role::select('id', 'nama_role')->orderBy('id')->get(),
+        ]);
+    }
+
     // Melihat semua user
     public function index(Request $request)
     {
@@ -18,7 +32,7 @@ class UserController extends Controller
         }
 
         $users = User::with('role')
-            ->select('id', 'role_id', 'name', 'email', 'kelas', 'foto', 'created_at')
+            ->select('id', 'role_id', 'name', 'email', 'kelas', 'nisn', 'alamat', 'foto', 'created_at')
             ->latest()
             ->get();
 
@@ -38,7 +52,7 @@ class UserController extends Controller
         }
 
         $user = User::with('role')
-            ->select('id', 'role_id', 'name', 'email', 'kelas', 'foto', 'created_at')
+            ->select('id', 'role_id', 'name', 'email', 'kelas', 'nisn', 'alamat', 'foto', 'created_at')
             ->findOrFail($id);
 
         return response()->json([
