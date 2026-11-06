@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	CalendarDays,
@@ -22,12 +22,12 @@ import api from "../../services/api";
 import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
-	["Dashboard", "/admin", HomeIcon],
+	["Beranda", "/admin", HomeIcon],
 	["Kunjungan UKS", "/admin/kunjungan", ClipboardCheck],
 	["Stok Obat", "/admin/obat", Pill],
 	["Inventaris", "/admin/inventaris", PackageSearch],
-	["Tips Kesehatan", "/admin/tips", Lightbulb],
-	["Event UKS", "/admin/event", CalendarDays],
+	["Kiat Kesehatan", "/admin/tips", Lightbulb],
+	["Acara UKS", "/admin/event", CalendarDays],
 	["Data Pengguna", "/admin/users", UsersRound],
 	["Profil Saya", "/admin/profil", User],
 ];
@@ -202,7 +202,7 @@ export default function Event() {
 						className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50"
 					>
 						<LogOut size={18} />
-						Logout
+						Keluar
 					</button>
 				</div>
 			</aside>
@@ -210,8 +210,8 @@ export default function Event() {
 			<main className="min-h-screen lg:ml-64">
 				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10">
 					<div>
-						<h2 className="text-2xl font-extrabold text-slate-800">Kelola Event UKS</h2>
-						<p className="mt-1 text-sm text-slate-400">Dashboard &gt; Event UKS</p>
+						<h2 className="text-2xl font-extrabold text-slate-800">Kelola Acara UKS</h2>
+						<p className="mt-1 text-sm text-slate-400">Beranda &gt; Acara UKS</p>
 					</div>
 					<div className="flex items-center gap-5">
 						<div className="flex items-center gap-3">
@@ -231,7 +231,7 @@ export default function Event() {
 						<label className="flex h-11 flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-white px-4">
 							<Search size={18} className="text-slate-400" />
 							<span className="sr-only">Cari event</span>
-							<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari event UKS..." className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400" />
+							<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari Acara UKS..." className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400" />
 						</label>
 						<button type="button" onClick={openCreate} className="flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white hover:bg-emerald-700">
 							<Plus size={16} />
@@ -243,7 +243,7 @@ export default function Event() {
 					<section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 						<div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 sm:px-6">
 							<div>
-								<h3 className="text-lg font-bold text-slate-800">Daftar Event UKS</h3>
+								<h3 className="text-lg font-bold text-slate-800">Daftar Acara UKS</h3>
 								<p className="mt-1 text-sm text-slate-400">Kelola kegiatan dan acara kesehatan sekolah.</p>
 							</div>
 							<span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{filteredEvents.length} event</span>
@@ -271,7 +271,7 @@ export default function Event() {
 				</div>
 			</main>
 
-			{showForm && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><form onSubmit={saveEvent} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">{editing ? "Edit data" : "Data baru"}</p><h3 className="mt-1 text-xl font-bold text-slate-800">{editing ? "Edit Event UKS" : "Tambah Event UKS"}</h3></div><button type="button" aria-label="Tutup" onClick={closeForm} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X size={18} /></button></div>{formError && <div className="mt-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</div>}<div className="mt-6 grid gap-5 sm:grid-cols-2"><label className="text-sm font-semibold text-slate-700">Judul Event<input name="judul" value={form.judul} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">Tanggal<input name="tanggal" type="date" value={form.tanggal} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">Lokasi<input name="lokasi" value={form.lokasi} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">URL Gambar<input name="gambar" type="url" value={form.gambar} onChange={updateForm} placeholder="https://..." className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700 sm:col-span-2">Deskripsi<textarea name="deskripsi" value={form.deskripsi} onChange={updateForm} required rows="4" className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm font-normal outline-none focus:border-emerald-500" /></label></div><div className="mt-7 flex justify-end gap-3"><button type="button" onClick={closeForm} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50">Batal</button><button type="submit" disabled={saving} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">{saving ? "Menyimpan..." : editing ? "Simpan Perubahan" : "Simpan Event"}</button></div></form></div>}
+			{showForm && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"><form onSubmit={saveEvent} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">{editing ? "Edit data" : "Data baru"}</p><h3 className="mt-1 text-xl font-bold text-slate-800">{editing ? "Edit Acara UKS" : "Tambah Acara UKS"}</h3></div><button type="button" aria-label="Tutup" onClick={closeForm} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X size={18} /></button></div>{formError && <div className="mt-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</div>}<div className="mt-6 grid gap-5 sm:grid-cols-2"><label className="text-sm font-semibold text-slate-700">Judul Event<input name="judul" value={form.judul} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">Tanggal<input name="tanggal" type="date" value={form.tanggal} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">Lokasi<input name="lokasi" value={form.lokasi} onChange={updateForm} required className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700">URL Gambar<input name="gambar" type="url" value={form.gambar} onChange={updateForm} placeholder="https://..." className="mt-2 h-11 w-full rounded-lg border border-slate-200 px-4 text-sm font-normal outline-none focus:border-emerald-500" /></label><label className="text-sm font-semibold text-slate-700 sm:col-span-2">Deskripsi<textarea name="deskripsi" value={form.deskripsi} onChange={updateForm} required rows="4" className="mt-2 w-full rounded-lg border border-slate-200 px-4 py-3 text-sm font-normal outline-none focus:border-emerald-500" /></label></div><div className="mt-7 flex justify-end gap-3"><button type="button" onClick={closeForm} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50">Batal</button><button type="submit" disabled={saving} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">{saving ? "Menyimpan..." : editing ? "Simpan Perubahan" : "Simpan Event"}</button></div></form></div>}
 		</div>
 	);
 }

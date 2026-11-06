@@ -1,13 +1,13 @@
-import { CalendarDays, ClipboardCheck, HeartPulse, Home as HomeIcon, Lightbulb, LogOut, Menu, PackageSearch, Pill, User } from "lucide-react";
+﻿import { CalendarDays, ClipboardCheck, HeartPulse, Home as HomeIcon, Lightbulb, LogOut, Menu, PackageSearch, Pill, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
-	{ label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+	{ label: "Beranda", path: "/Dashboard", icon: HomeIcon },
 	{ label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
 	{ label: "Stok Obat", path: "/stok-obat", icon: Pill },
 	{ label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-	{ label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-	{ label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+	{ label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+	{ label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
 	{ label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -23,7 +23,7 @@ export default function MobileMenu({ currentPath, onLogout }) {
 				<div className="mb-3 flex items-center gap-2 border-b border-slate-100 px-3 pb-3 text-sm font-extrabold text-emerald-700"><HeartPulse size={18} />UKS STEMBASE</div>
 				<nav>
 					{menuItems.map(({ label, path, icon: Icon }) => <button key={path} type="button" onClick={() => navigate(path)} className={`mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm ${currentPath === path ? "bg-emerald-600 font-semibold text-white" : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"}`}><Icon size={17} />{label}</button>)}
-					<button type="button" onClick={onLogout} className="mt-2 flex w-full items-center gap-3 border-t border-slate-100 px-3 pt-3 text-left text-sm font-medium text-red-500"><LogOut size={17} />Logout</button>
+					<button type="button" onClick={onLogout} className="mt-2 flex w-full items-center gap-3 border-t border-slate-100 px-3 pt-3 text-left text-sm font-medium text-red-500"><LogOut size={17} />Keluar</button>
 				</nav>
 			</div>
 		</details>

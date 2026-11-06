@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -37,7 +37,7 @@ export default function Home() {
   });
 
   // =========================
-  // LOGOUT
+  // Keluar
   // =========================
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -83,14 +83,14 @@ export default function Home() {
         ========================== */}
         <nav className="px-4 py-6">
 
-          {/* Dashboard */}
+          {/* Beranda */}
           <button
             type="button"
             onClick={() => navigate("/Dashboard")}
             className="mb-2 flex w-full items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-left text-sm font-semibold text-emerald-600 transition hover:bg-emerald-100"
           >
             <HomeIcon size={18} />
-            Dashboard
+            Beranda
           </button>
 
           {/* Absensi */}
@@ -123,14 +123,14 @@ export default function Home() {
             Inventaris
           </button>
 
-          {/* Tips Kesehatan */}
+          {/* Kiat Kesehatan */}
           <button
             type="button"
             onClick={() => navigate("/tips-kesehatan")}
             className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 hover:text-emerald-600"
           >
             <Lightbulb size={18} />
-            Tips Kesehatan
+            Kiat Kesehatan
           </button>
 
           {/* Event */}
@@ -140,7 +140,7 @@ export default function Home() {
             className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 hover:text-emerald-600"
           >
             <CalendarDays size={18} />
-            Event UKS
+            Acara UKS
           </button>
 
           {/* Profil */}
@@ -156,7 +156,7 @@ export default function Home() {
         </nav>
 
         {/* =========================
-            LOGOUT
+            Keluar
         ========================== */}
         <div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4">
 
@@ -166,7 +166,7 @@ export default function Home() {
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"
           >
             <LogOut size={18} />
-            Logout
+            Keluar
           </button>
 
         </div>
@@ -188,7 +188,7 @@ export default function Home() {
           {/* Judul */}
           <div>
             <h2 className="text-2xl font-extrabold text-slate-800">
-              Dashboard
+              Beranda
             </h2>
 
             <p className="mt-1 text-sm text-slate-400">
@@ -350,7 +350,7 @@ export default function Home() {
 
 
             {/* =========================
-                TIPS KESEHATAN
+                Kiat Kesehatan
             ========================== */}
             <div className="group flex min-h-70 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-white p-8 text-center shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
 
@@ -362,7 +362,7 @@ export default function Home() {
               </div>
 
               <h3 className="mt-5 text-lg font-bold text-slate-800">
-                Tips Kesehatan
+                Kiat Kesehatan
               </h3>
 
               <p className="mt-2 max-w-57.5 text-sm leading-6 text-slate-400">
@@ -393,7 +393,7 @@ export default function Home() {
               </div>
 
               <h3 className="mt-5 text-lg font-bold text-slate-800">
-                Event UKS
+                Acara UKS
               </h3>
 
               <p className="mt-2 max-w-57.5 text-sm leading-6 text-slate-400">
@@ -459,7 +459,7 @@ export default function Home() {
           <div className="mt-8 pb-4 text-center">
 
             <p className="text-xs text-slate-400">
-              © {new Date().getFullYear()} UKS-STEMBASE
+              Â© {new Date().getFullYear()} UKS-STEMBASE
             </p>
 
           </div>

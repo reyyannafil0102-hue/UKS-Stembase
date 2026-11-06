@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
@@ -282,7 +282,7 @@ export default function Login() {
 
           {/* Footer */}
           <p className="mt-12 text-center text-xs text-slate-400">
-            © {new Date().getFullYear()} UKS-STEMBASE
+            Â© {new Date().getFullYear()} UKS-STEMBASE
           </p>
 
         </div>

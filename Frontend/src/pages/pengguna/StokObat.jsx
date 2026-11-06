@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarDays,
@@ -17,12 +17,12 @@ import MobileMenu from "../../components/MobileMenu";
 import ImageLightbox from "../../components/ImageLightbox";
 
 const menuItems = [
-  { label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+  { label: "Beranda", path: "/Dashboard", icon: HomeIcon },
   { label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
   { label: "Stok Obat", path: "/stok-obat", icon: Pill },
   { label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-  { label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-  { label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+  { label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+  { label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
   { label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -119,7 +119,7 @@ export default function StokObat() {
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"
           >
             <LogOut size={18} />
-            Logout
+            Keluar
           </button>
         </div>
       </aside>
@@ -132,7 +132,7 @@ export default function StokObat() {
               Stok Obat
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              Dashboard &gt; Stok Obat
+              Beranda &gt; Stok Obat
             </p>
           </div>
           <div className="flex items-center gap-5">

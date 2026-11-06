@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarDays,
@@ -21,12 +21,12 @@ import api from "../../services/api";
 import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
-  ["Dashboard", "/admin", HomeIcon],
+  ["Beranda", "/admin", HomeIcon],
   ["Kunjungan UKS", "/admin/kunjungan", ClipboardCheck],
   ["Stok Obat", "/admin/obat", Pill],
   ["Inventaris", "/admin/inventaris", PackageSearch],
-  ["Tips Kesehatan", "/admin/tips", Lightbulb],
-  ["Event UKS", "/admin/event", CalendarDays],
+  ["Kiat Kesehatan", "/admin/tips", Lightbulb],
+  ["Acara UKS", "/admin/event", CalendarDays],
   ["Data Pengguna", "/admin/users", UsersRound],
   ["Profil Saya", "/admin/profil", User],
 ];
@@ -43,7 +43,7 @@ const emptyForm = {
   detail: {
     section_title: "",
     section_body: "",
-    benefits: [{ icon: "💚", title: "", description: "" }],
+    benefits: [{ icon: "", title: "", description: "" }],
     steps: [""],
     reminder: "",
   },
@@ -81,7 +81,7 @@ export default function TipsKesehatan() {
           navigate("/login");
           return;
         }
-        setError("Data tips kesehatan belum dapat dimuat.");
+        setError("Data Kiat Kesehatan belum dapat dimuat.");
       } finally {
         setLoading(false);
       }
@@ -119,7 +119,7 @@ export default function TipsKesehatan() {
         section_body: tip.detail?.section_body || "",
         benefits: tip.detail?.benefits?.length
           ? tip.detail.benefits
-          : [{ icon: "💚", title: "", description: "" }],
+          : [{ icon: "", title: "", description: "" }],
         steps: tip.detail?.steps?.length ? tip.detail.steps : [""],
         reminder: tip.detail?.reminder || "",
       },
@@ -166,7 +166,7 @@ export default function TipsKesehatan() {
         ...current.detail,
         benefits: [
           ...current.detail.benefits,
-          { icon: "💚", title: "", description: "" },
+          { icon: "", title: "", description: "" },
         ],
       },
     }));
@@ -290,7 +290,7 @@ export default function TipsKesehatan() {
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50"
           >
             <LogOut size={18} />
-            Logout
+            Keluar
           </button>
         </div>
       </aside>
@@ -301,7 +301,7 @@ export default function TipsKesehatan() {
               Kelola Tips &amp; Trick
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              Dashboard &gt; Tips Kesehatan
+              Beranda &gt; Kiat Kesehatan
             </p>
           </div>
           <div className="flex items-center gap-5">
@@ -334,7 +334,7 @@ export default function TipsKesehatan() {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Cari tips kesehatan..."
+                placeholder="Cari Kiat Kesehatan..."
                 className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
               />
             </label>
@@ -356,7 +356,7 @@ export default function TipsKesehatan() {
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 sm:px-6">
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  Tips Kesehatan
+                  Kiat Kesehatan
                 </h3>
                 <p className="mt-1 text-sm text-slate-400">
                   Kelola informasi kesehatan untuk siswa.
@@ -369,7 +369,7 @@ export default function TipsKesehatan() {
             <div className="overflow-x-auto">
               {loading ? (
                 <p className="px-6 py-10 text-sm text-slate-400">
-                  Memuat tips kesehatan...
+                  Memuat Kiat Kesehatan...
                 </p>
               ) : filteredTips.length === 0 ? (
                 <div className="px-6 py-12 text-center">
@@ -455,7 +455,7 @@ export default function TipsKesehatan() {
               )}
             </div>
             <div className="border-t border-slate-100 px-5 py-4 text-xs text-slate-400 sm:px-6">
-              Menampilkan {filteredTips.length} tips kesehatan
+              Menampilkan {filteredTips.length} Kiat Kesehatan
             </div>
           </section>
         </div>
@@ -472,7 +472,7 @@ export default function TipsKesehatan() {
                   {editing ? "Edit data" : "Data baru"}
                 </p>
                 <h3 className="mt-1 text-xl font-bold text-slate-800">
-                  {editing ? "Edit Tips Kesehatan" : "Tambah Tips Kesehatan"}
+                  {editing ? "Edit Kiat Kesehatan" : "Tambah Kiat Kesehatan"}
                 </h3>
               </div>
               <button
@@ -609,7 +609,7 @@ export default function TipsKesehatan() {
                             updateBenefit(index, "icon", event.target.value)
                           }
                           maxLength={20}
-                          placeholder="💚"
+                          placeholder="Ikon"
                           className="mt-1 h-9 w-full rounded-lg border border-slate-200 px-2 text-sm outline-none focus:border-emerald-500"
                         />
                       </label>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, CalendarDays, CheckCircle2, ClipboardCheck, Droplets, HeartPulse, Home as HomeIcon, Lightbulb, LogOut, MapPin, PackageSearch, Pill, Search, Sparkles, Stethoscope, User } from "lucide-react";
 import api from "../../services/api";
@@ -6,12 +6,12 @@ import MobileMenu from "../../components/MobileMenu";
 import ImageLightbox from "../../components/ImageLightbox";
 
 const menuItems = [
-	{ label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+	{ label: "Beranda", path: "/Dashboard", icon: HomeIcon },
 	{ label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
 	{ label: "Stok Obat", path: "/stok-obat", icon: Pill },
 	{ label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-	{ label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-	{ label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+	{ label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+	{ label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
 	{ label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -83,13 +83,13 @@ export default function EventUKS() {
 						return <button key={path} type="button" onClick={() => navigate(path)} className={`mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm transition ${active ? "bg-emerald-600 font-semibold text-white" : "text-slate-600 hover:bg-slate-50 hover:text-emerald-600"}`}><Icon size={18} />{label}</button>;
 					})}
 				</nav>
-				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Logout</button></div>
+				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Keluar</button></div>
 			</aside>
 			<MobileMenu currentPath="/event-uks" onLogout={handleLogout} />
 
 			<main className="min-h-screen lg:ml-64">
 				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10">
-					<div><h2 className="text-2xl font-extrabold text-slate-800">Event UKS</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Event UKS</p></div>
+					<div><h2 className="text-2xl font-extrabold text-slate-800">Acara UKS</h2><p className="mt-1 text-sm text-slate-400">Beranda &gt; Acara UKS</p></div>
 					<div className="flex items-center gap-5"><div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <User size={21} className="text-emerald-600" />}</div><div className="hidden sm:block"><p className="text-sm font-bold text-slate-700">{user?.name || "Pengguna"}</p><p className="mt-0.5 text-xs text-slate-400">Siswa</p></div></div></div>
 				</header>
 

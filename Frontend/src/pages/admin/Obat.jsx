@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarDays,
@@ -21,12 +21,12 @@ import api from "../../services/api";
 import ZoomableImage from "../../components/ZoomableImage";
 
 const menuItems = [
-  ["Dashboard", "/admin", HomeIcon],
+  ["Beranda", "/admin", HomeIcon],
   ["Kunjungan UKS", "/admin/kunjungan", ClipboardCheck],
   ["Stok Obat", "/admin/obat", Pill],
   ["Inventaris", "/admin/inventaris", PackageSearch],
-  ["Tips Kesehatan", "/admin/tips", Lightbulb],
-  ["Event UKS", "/admin/event", CalendarDays],
+  ["Kiat Kesehatan", "/admin/tips", Lightbulb],
+  ["Acara UKS", "/admin/event", CalendarDays],
   ["Data Pengguna", "/admin/users", UsersRound],
   ["Profil Saya", "/admin/profil", User],
 ];
@@ -212,7 +212,7 @@ export default function Obat() {
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50"
           >
             <LogOut size={18} />
-            Logout
+            Keluar
           </button>
         </div>
       </aside>
@@ -223,7 +223,7 @@ export default function Obat() {
               Kelola Obat
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              Dashboard &gt; Stok Obat
+              Beranda &gt; Stok Obat
             </p>
           </div>
           <div className="flex items-center gap-5">

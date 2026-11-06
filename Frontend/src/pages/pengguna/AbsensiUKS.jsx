@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, ClipboardCheck, Clock3, HeartPulse, Home as HomeIcon, Lightbulb, LogOut, PackageSearch, Pill, Send, User } from "lucide-react";
 import api from "../../services/api";
 import MobileMenu from "../../components/MobileMenu";
 
 const menuItems = [
-	{ label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+	{ label: "Beranda", path: "/Dashboard", icon: HomeIcon },
 	{ label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
 	{ label: "Stok Obat", path: "/stok-obat", icon: Pill },
 	{ label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-	{ label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-	{ label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+	{ label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+	{ label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
 	{ label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -106,13 +106,13 @@ export default function AbsensiUKS() {
 						return <button key={path} type="button" onClick={() => navigate(path)} className={`mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm transition ${active ? "bg-emerald-600 font-semibold text-white" : "text-slate-600 hover:bg-slate-50 hover:text-emerald-600"}`}><Icon size={18} />{label}</button>;
 					})}
 				</nav>
-				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Logout</button></div>
+				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Keluar</button></div>
 			</aside>
 			<MobileMenu currentPath="/absensi-uks" onLogout={handleLogout} />
 
 			<main className="min-h-screen lg:ml-64">
 				<header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 sm:px-8 lg:px-10">
-					<div><h2 className="text-2xl font-extrabold text-slate-800">Absensi UKS</h2><p className="mt-1 text-sm text-slate-400">Dashboard &gt; Absensi UKS</p></div>
+					<div><h2 className="text-2xl font-extrabold text-slate-800">Absensi UKS</h2><p className="mt-1 text-sm text-slate-400">Beranda &gt; Absensi UKS</p></div>
 					<div className="flex items-center gap-5"><div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-emerald-100">{user?.foto ? <img src={user.foto} alt="Foto profil" className="h-full w-full object-cover" /> : <User size={21} className="text-emerald-600" />}</div><div className="hidden sm:block"><p className="text-sm font-bold text-slate-700">{user?.name || "Pengguna"}</p><p className="mt-0.5 text-xs text-slate-400">Siswa</p></div></div></div>
 				</header>
 
@@ -128,7 +128,7 @@ export default function AbsensiUKS() {
 						</form>
 					</section>
 
-						  <section className="mt-7 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8"><div className="flex items-center justify-between gap-4"><div><h3 className="text-lg font-bold text-slate-800">Riwayat Kunjungan</h3><p className="mt-1 text-sm text-slate-400">Daftar absensi yang pernah Anda kirim.</p></div><ClipboardCheck size={22} className="text-emerald-600" /></div>{loading ? <p className="mt-6 text-sm text-slate-400">Memuat riwayat...</p> : kunjungans.length === 0 ? <p className="mt-6 text-sm text-slate-400">Belum ada riwayat kunjungan.</p> : <div className="mt-5 space-y-3">{kunjungans.map((kunjungan) => <div key={kunjungan.id} className="flex flex-col gap-3 rounded-lg border border-slate-100 p-4 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0"><p className="[overflow-wrap:anywhere] text-sm font-semibold text-slate-700">{kunjungan.keluhan}</p><p className="mt-1 [overflow-wrap:anywhere] text-xs text-slate-500">{kunjungan.nama || kunjungan.user?.name || nama} · {kunjungan.jenis_pengguna === "Guru" ? "Guru" : `Kelas ${kunjungan.kelas || kunjungan.user?.kelas || kelas}`}</p><p className="mt-1 text-xs text-slate-400">{formatDate(kunjungan.waktu_masuk)}</p>{kunjungan.status === "selesai" && kunjungan.tindakan && <p className="mt-3 [overflow-wrap:anywhere] rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700"><span className="font-semibold">Tindakan:</span> {kunjungan.tindakan}</p>}</div><span className={`w-fit shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${kunjungan.status === "selesai" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{getVisitStatus(kunjungan.status)}</span></div>)}</div>}</section>
+						  <section className="mt-7 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8"><div className="flex items-center justify-between gap-4"><div><h3 className="text-lg font-bold text-slate-800">Riwayat Kunjungan</h3><p className="mt-1 text-sm text-slate-400">Daftar absensi yang pernah Anda kirim.</p></div><ClipboardCheck size={22} className="text-emerald-600" /></div>{loading ? <p className="mt-6 text-sm text-slate-400">Memuat riwayat...</p> : kunjungans.length === 0 ? <p className="mt-6 text-sm text-slate-400">Belum ada riwayat kunjungan.</p> : <div className="mt-5 space-y-3">{kunjungans.map((kunjungan) => <div key={kunjungan.id} className="flex flex-col gap-3 rounded-lg border border-slate-100 p-4 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0"><p className="[overflow-wrap:anywhere] text-sm font-semibold text-slate-700">{kunjungan.keluhan}</p><p className="mt-1 [overflow-wrap:anywhere] text-xs text-slate-500">{kunjungan.nama || kunjungan.user?.name || nama} Â· {kunjungan.jenis_pengguna === "Guru" ? "Guru" : `Kelas ${kunjungan.kelas || kunjungan.user?.kelas || kelas}`}</p><p className="mt-1 text-xs text-slate-400">{formatDate(kunjungan.waktu_masuk)}</p>{kunjungan.status === "selesai" && kunjungan.tindakan && <p className="mt-3 [overflow-wrap:anywhere] rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700"><span className="font-semibold">Tindakan:</span> {kunjungan.tindakan}</p>}</div><span className={`w-fit shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${kunjungan.status === "selesai" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{getVisitStatus(kunjungan.status)}</span></div>)}</div>}</section>
 				</div>
 			</main>
 		</div>

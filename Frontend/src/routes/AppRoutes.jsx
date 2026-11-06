@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -77,13 +77,13 @@ function AppRoutes() {
           element={<Inventaris />}
         />
 
-        {/* Halaman tips kesehatan pengguna */}
+        {/* Halaman Kiat Kesehatan pengguna */}
         <Route
           path="/tips-kesehatan"
           element={<TipsKesehatan />}
         />
 
-        {/* Halaman event UKS pengguna */}
+        {/* Halaman Acara UKS pengguna */}
         <Route
           path="/event-uks"
           element={<EventUKS />}
@@ -101,7 +101,7 @@ function AppRoutes() {
           element={<AdminProfile />}
         />
 
-        {/* Dashboard administrator */}
+        {/* Beranda administrator */}
         <Route
           path="/admin"
           element={<AdminDashboard />}
@@ -131,13 +131,13 @@ function AppRoutes() {
           element={<AdminInventaris />}
         />
 
-        {/* Kelola tips kesehatan administrator */}
+        {/* Kelola Kiat Kesehatan administrator */}
         <Route
           path="/admin/tips"
           element={<AdminTips />}
         />
 
-        {/* Kelola event UKS administrator */}
+        {/* Kelola Acara UKS administrator */}
         <Route
           path="/admin/event"
           element={<AdminEvent />}

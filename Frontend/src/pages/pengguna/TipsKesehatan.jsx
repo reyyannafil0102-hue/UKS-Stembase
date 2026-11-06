@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarDays,
@@ -17,12 +17,12 @@ import MobileMenu from "../../components/MobileMenu";
 import ImageLightbox from "../../components/ImageLightbox";
 
 const menuItems = [
-  { label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+  { label: "Beranda", path: "/Dashboard", icon: HomeIcon },
   { label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
   { label: "Stok Obat", path: "/stok-obat", icon: Pill },
   { label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-  { label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-  { label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+  { label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+  { label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
   { label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -34,10 +34,10 @@ const getTipImageUrl = (gambar) => {
 };
 
 const tipArtworks = [
-  { emoji: "🥪", background: "bg-emerald-100" },
-  { emoji: "💧", background: "bg-sky-100" },
-  { emoji: "😴", background: "bg-amber-100" },
-  { emoji: "☀️", background: "bg-rose-100" },
+  { emoji: "A", background: "bg-emerald-100" },
+  { emoji: "H", background: "bg-sky-100" },
+  { emoji: "I", background: "bg-amber-100" },
+  { emoji: "M", background: "bg-rose-100" },
 ];
 
 export default function TipsKesehatan() {
@@ -67,7 +67,7 @@ export default function TipsKesehatan() {
           navigate("/login");
           return;
         }
-        setError("Data tips kesehatan belum dapat dimuat.");
+        setError("Data Kiat Kesehatan belum dapat dimuat.");
       } finally {
         setLoading(false);
       }
@@ -131,7 +131,7 @@ export default function TipsKesehatan() {
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"
           >
             <LogOut size={18} />
-            Logout
+            Keluar
           </button>
         </div>
       </aside>
@@ -194,7 +194,7 @@ export default function TipsKesehatan() {
                 onClick={() => setSelectedTip(null)}
                 className="mb-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
               >
-                ← Kembali ke kiat kesehatan
+                &larr; Kembali ke kiat kesehatan
               </button>
               <article className="w-full overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm">
                 <section className="grid sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
@@ -226,7 +226,7 @@ export default function TipsKesehatan() {
                   </div>
                   <div className="flex flex-col justify-center p-5 sm:p-7">
                     <span className="w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-emerald-700">
-                      ♥ Kiat Kesehatan
+                      Kiat Kesehatan
                     </span>
                     <h1 className="mt-3 [overflow-wrap:anywhere] text-xl font-extrabold text-slate-800 sm:text-2xl">
                       {selectedTip.judul || "Kiat Kesehatan"}
@@ -261,7 +261,7 @@ export default function TipsKesehatan() {
                             className="rounded-lg border border-emerald-100 bg-[#f3f8f5] p-3"
                           >
                             <span aria-hidden="true" className="text-base">
-                              {benefit.icon || "💚"}
+                              {benefit.icon || ""}
                             </span>
                             {benefit.title && (
                               <h3 className="mt-1 [overflow-wrap:anywhere] text-xs font-bold text-slate-800">
@@ -302,7 +302,7 @@ export default function TipsKesehatan() {
 
                   {detail.reminder && (
                     <aside className="rounded-lg bg-emerald-50 px-3 py-2.5 [overflow-wrap:anywhere] text-[11px] leading-relaxed text-emerald-800">
-                      <span className="font-bold">♥ Ingat!</span>{" "}
+                      <span className="font-bold">Ingat!</span>{" "}
                       {detail.reminder}
                     </aside>
                   )}
@@ -313,7 +313,7 @@ export default function TipsKesehatan() {
             <>
           <section className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
             <h3 className="text-sm font-bold text-emerald-800">
-              💚 Kiat Sehat untuk Siswa
+              Kiat Sehat untuk Siswa
             </h3>
             <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
               Kebiasaan sederhana sehari-hari dapat membantu menjaga tubuh tetap
@@ -384,7 +384,7 @@ export default function TipsKesehatan() {
 
           <aside className="mt-3 flex items-start gap-2 rounded-xl border border-emerald-100 bg-white px-3 py-2.5 text-[10px] leading-relaxed text-slate-500">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-50">
-              💡
+              !
             </span>
             <p>
               <span className="font-bold text-emerald-700">Ingat!</span> Kalau

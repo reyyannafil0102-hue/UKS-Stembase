@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, CheckCircle2, ClipboardCheck, Edit3, HeartPulse, Home as HomeIcon, Lightbulb, LockKeyhole, LogOut, Mail, PackageSearch, Pill, Save, User, UserRound, X } from "lucide-react";
 import api from "../../services/api";
@@ -6,12 +6,12 @@ import schoolImage from "../../assets/images/Logo-SMKN-7-Semarang.png";
 import MobileMenu from "../../components/MobileMenu";
 
 const menuItems = [
-	{ label: "Dashboard", path: "/Dashboard", icon: HomeIcon },
+	{ label: "Beranda", path: "/Dashboard", icon: HomeIcon },
 	{ label: "Absensi UKS", path: "/absensi-uks", icon: ClipboardCheck },
 	{ label: "Stok Obat", path: "/stok-obat", icon: Pill },
 	{ label: "Inventaris", path: "/inventaris", icon: PackageSearch },
-	{ label: "Tips Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
-	{ label: "Event UKS", path: "/event-uks", icon: CalendarDays },
+	{ label: "Kiat Kesehatan", path: "/tips-kesehatan", icon: Lightbulb },
+	{ label: "Acara UKS", path: "/event-uks", icon: CalendarDays },
 	{ label: "Profil Saya", path: "/profil", icon: User },
 ];
 
@@ -154,7 +154,7 @@ export default function Profile() {
 			<aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-slate-200 bg-white lg:block">
 				<div className="flex h-20 items-center gap-3 border-b border-slate-100 px-5"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50"><HeartPulse size={27} className="text-emerald-600" /></div><div><h1 className="text-base font-extrabold text-emerald-700">UKS STEMBASE</h1><p className="mt-0.5 text-[10px] text-slate-400">Sehat, Peduli, Berprestasi</p></div></div>
 				<nav className="px-4 py-6">{menuItems.map(({ label, path, icon: Icon }) => <button key={path} type="button" onClick={() => navigate(path)} className={`mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm transition ${path === "/profil" ? "bg-emerald-50 font-semibold text-emerald-600" : "text-slate-600 hover:bg-slate-50 hover:text-emerald-600"}`}><Icon size={18} />{label}</button>)}</nav>
-				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Logout</button></div>
+				<div className="absolute bottom-0 left-0 w-full border-t border-slate-100 p-4"><button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-50"><LogOut size={18} />Keluar</button></div>
 			</aside>
 			<MobileMenu currentPath="/profil" onLogout={handleLogout} />
 
